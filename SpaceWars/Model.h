@@ -30,10 +30,6 @@ private:
 
 	// All the meshes and transformations
 	std::vector<Mesh> meshes;
-	std::vector<glm::vec3> translationsMeshes;
-	std::vector<glm::quat> rotationsMeshes;
-	std::vector<glm::vec3> scalesMeshes;
-	std::vector<glm::mat4> matricesMeshes;
 
 	// Prevents textures from being loaded twice
 	std::vector<std::string> loadedTexName;
@@ -43,7 +39,7 @@ private:
 	void loadMesh(unsigned int indMesh);
 
 	// Traverses a node recursively, so it essentially traverses all connected nodes
-	void traverseNode(unsigned int nextNode, glm::mat4 matrix = glm::mat4(1.0f));
+	void traverseNode(unsigned int nextNode);
 
 	// Gets the binary data from a file
 	std::vector<unsigned char> getData();

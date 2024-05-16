@@ -1,19 +1,11 @@
-﻿  Camera.cpp
-  EBO.cpp
-  Main.cpp
-  Mesh.cpp
+﻿  Main.cpp
+C:\Users\MARWAN\Desktop\CSED\Computer Engineering Year 3\2nd Semester\Graphics\3D-Space-War-Game\SpaceWars\assimpModel.h(184,89): warning C4267: 'argument': conversion from 'size_t' to 'GLuint', possible loss of data
+  (compiling source file 'Main.cpp')
+  
   Model.cpp
-F:\My Projects\Space Wars\SpaceWars\Mesh.cpp(80,43): warning C4267: 'argument': conversion from 'size_t' to 'GLsizei', possible loss of data
-F:\My Projects\Space Wars\SpaceWars\Model.cpp(262,91): warning C4267: 'argument': conversion from 'size_t' to 'GLuint', possible loss of data
-F:\My Projects\Space Wars\SpaceWars\Model.cpp(270,93): warning C4267: 'argument': conversion from 'size_t' to 'GLuint', possible loss of data
-  shaderClass.cpp
-  stb.cpp
-  Texture.cpp
-  VAO.cpp
-F:\My Projects\Space Wars\SpaceWars\VAO.cpp(13,63): warning C4244: 'argument': conversion from 'GLsizeiptr' to 'GLsizei', possible loss of data
-  VBO.cpp
+C:\Users\MARWAN\Desktop\CSED\Computer Engineering Year 3\2nd Semester\Graphics\3D-Space-War-Game\SpaceWars\Model.cpp(204,91): warning C4267: 'argument': conversion from 'size_t' to 'GLuint', possible loss of data
+C:\Users\MARWAN\Desktop\CSED\Computer Engineering Year 3\2nd Semester\Graphics\3D-Space-War-Game\SpaceWars\Model.cpp(212,93): warning C4267: 'argument': conversion from 'size_t' to 'GLuint', possible loss of data
   Generating Code...
-  glad.c
 glfw3.lib(input.obj) : warning LNK4099: PDB '' was not found with 'glfw3.lib(input.obj)' or at ''; linking object as if no debug info
 glfw3.lib(init.obj) : warning LNK4099: PDB '' was not found with 'glfw3.lib(init.obj)' or at ''; linking object as if no debug info
 glfw3.lib(monitor.obj) : warning LNK4099: PDB '' was not found with 'glfw3.lib(monitor.obj)' or at ''; linking object as if no debug info
@@ -29,4 +21,10 @@ glfw3.lib(vulkan.obj) : warning LNK4099: PDB '' was not found with 'glfw3.lib(vu
 glfw3.lib(wgl_context.obj) : warning LNK4099: PDB '' was not found with 'glfw3.lib(wgl_context.obj)' or at ''; linking object as if no debug info
 glfw3.lib(egl_context.obj) : warning LNK4099: PDB '' was not found with 'glfw3.lib(egl_context.obj)' or at ''; linking object as if no debug info
 glfw3.lib(osmesa_context.obj) : warning LNK4099: PDB '' was not found with 'glfw3.lib(osmesa_context.obj)' or at ''; linking object as if no debug info
-  SpaceWars.vcxproj -> F:\My Projects\Space Wars\SpaceWars\x64\Debug\SpaceWars.exe
+Main.obj : error LNK2019: unresolved external symbol "public: __cdecl Assimp::Importer::Importer(void)" (??0Importer@Assimp@@QEAA@XZ) referenced in function "private: void __cdecl AssimpModel::loadModel(class std::basic_string<char,struct std::char_traits<char>,class std::allocator<char> > const &)" (?loadModel@AssimpModel@@AEAAXAEBV?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@@Z)
+Main.obj : error LNK2019: unresolved external symbol "public: __cdecl Assimp::Importer::~Importer(void)" (??1Importer@Assimp@@QEAA@XZ) referenced in function "private: void __cdecl AssimpModel::loadModel(class std::basic_string<char,struct std::char_traits<char>,class std::allocator<char> > const &)" (?loadModel@AssimpModel@@AEAAXAEBV?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@@Z)
+Main.obj : error LNK2019: unresolved external symbol "public: struct aiScene const * __cdecl Assimp::Importer::ReadFile(char const *,unsigned int)" (?ReadFile@Importer@Assimp@@QEAAPEBUaiScene@@PEBDI@Z) referenced in function "public: struct aiScene const * __cdecl Assimp::Importer::ReadFile(class std::basic_string<char,struct std::char_traits<char>,class std::allocator<char> > const &,unsigned int)" (?ReadFile@Importer@Assimp@@QEAAPEBUaiScene@@AEBV?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@I@Z)
+Main.obj : error LNK2019: unresolved external symbol "public: char const * __cdecl Assimp::Importer::GetErrorString(void)const " (?GetErrorString@Importer@Assimp@@QEBAPEBDXZ) referenced in function "private: void __cdecl AssimpModel::loadModel(class std::basic_string<char,struct std::char_traits<char>,class std::allocator<char> > const &)" (?loadModel@AssimpModel@@AEAAXAEBV?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@@Z)
+Main.obj : error LNK2019: unresolved external symbol aiGetMaterialTextureCount referenced in function "public: unsigned int __cdecl aiMaterial::GetTextureCount(enum aiTextureType)const " (?GetTextureCount@aiMaterial@@QEBAIW4aiTextureType@@@Z)
+Main.obj : error LNK2019: unresolved external symbol aiGetMaterialTexture referenced in function "public: enum aiReturn __cdecl aiMaterial::GetTexture(enum aiTextureType,unsigned int,struct aiString *,enum aiTextureMapping *,unsigned int *,float *,enum aiTextureOp *,enum aiTextureMapMode *)const " (?GetTexture@aiMaterial@@QEBA?AW4aiReturn@@W4aiTextureType@@IPEAUaiString@@PEAW4aiTextureMapping@@PEAIPEAMPEAW4aiTextureOp@@PEAW4aiTextureMapMode@@@Z)
+C:\Users\MARWAN\Desktop\CSED\Computer Engineering Year 3\2nd Semester\Graphics\3D-Space-War-Game\SpaceWars\x64\Debug\SpaceWars.exe : fatal error LNK1120: 6 unresolved externals

@@ -1,5 +1,6 @@
-#include<filesystem>
-#include"Model.h"
+#include <filesystem>
+#include "Model.h"
+#include "assimpModel.h"
 
 // Window dimensions
 const unsigned int width = 1400;
@@ -65,6 +66,11 @@ glm::quat saturnRot = glm::quat(1.0f, 0.0f, 0.0f, 0.0f);
 glm::quat uranusRot = glm::quat(1.0f, 0.0f, 0.0f, 0.0f);
 glm::quat neptuneRot = glm::quat(1.0f, 0.0f, 0.0f, 0.0f);
 
+
+//spaceShip pos
+glm::vec3 spaceShipPos = glm::vec3(0.0f, 0.0f, 100.0f);
+glm::quat spaceShipRot = glm::quat(1.0f, 0.0f, 0.0f, 0.0f);
+
 // Function to generate random float between -1.0 and 1.0 for asteroid positions
 float randf()
 {
@@ -129,7 +135,7 @@ int main()
 	
 	// Get the parent directory of the current directory
 	std::string parentDir = (std::filesystem::current_path().std::filesystem::path::parent_path()).string();
-
+	
 	// Paths to all the models
 	std::string sunPath = "/Resources/models/sun/scene.gltf";
 	std::string mercuryPath = "/Resources/models/mercury/scene.gltf";
@@ -141,6 +147,11 @@ int main()
 	std::string asteroidPath = "/Resources/models/asteroid/scene.gltf";
 	std::string uranusPath = "/Resources/models/uranus/scene.gltf";
 	std::string neptunePath = "/Resources/models/neptune/scene.gltf";
+
+	//std::string spaceShipPath = "/Resources/models/spaceship/spaceship.gltf";
+	//std::string spaceShipPath = "/Resources/models/spaceship/neghvar.obj";
+	std::string spaceShipPath = "/Resources/models/spaceship1/voyager.obj";
+
 	
 	// Load in all models
 	Model sun((parentDir + sunPath).c_str());
@@ -154,6 +165,10 @@ int main()
 	Model uranus((parentDir + uranusPath).c_str());
 	Model neptune((parentDir + neptunePath).c_str());
 
+	//Model spaceShip((parentDir + spaceShipPath).c_str());
+	string path = parentDir + spaceShipPath;
+	AssimpModel spaceShip(path);
+	  
 	// Create VAO, VBO, and EBO for the skybox
 	unsigned int skyboxVAO, skyboxVBO, skyboxEBO;
 	glGenVertexArrays(1, &skyboxVAO);
@@ -286,6 +301,8 @@ int main()
 		uranus.Draw(shaderProgram, camera, uranusPos, uranusRot, glm::vec3(1.0f));
 		neptune.Draw(shaderProgram, camera, neptunePos, neptuneRot, glm::vec3(1.0f));
 
+		spaceShip.Draw(shaderProgram, camera, spaceShipPos, spaceShipRot, glm::vec3(4.0f));
+		
 		// Update the positions of the planets to orbit the sun with different speeds
 		mercuryPos = glm::vec3(mercuryPos.x * cos(0.005f) - mercuryPos.z * sin(-0.005f), 0.0f, mercuryPos.x * sin(-0.005f) + mercuryPos.z * cos(0.005f));
 		venusPos = glm::vec3(venusPos.x * cos(0.004f) - venusPos.z * sin(-0.004f), 0.0f, venusPos.x * sin(-0.004f) + venusPos.z * cos(0.004f));
