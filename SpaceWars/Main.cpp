@@ -71,6 +71,8 @@ float randf()
 	return -1.0f + (rand() / (RAND_MAX / 2.0f));
 }
 
+
+
 // Main function
 int main()
 {
@@ -110,6 +112,12 @@ int main()
 	// The position of the light is at the sun
 	glm::vec3 lightPos = sunPos;
 
+
+	//////////////////////////////////////////////////////////////////////////////////////
+	
+
+    ////////////////////////////////////////////////////////////////////////////////////
+   	
 	// Activate the shader program
 	shaderProgram.Activate();
 	glUniform4f(glGetUniformLocation(shaderProgram.ID, "lightColor"), lightColor.x, lightColor.y, lightColor.z, lightColor.w);
@@ -268,14 +276,32 @@ int main()
 		// Updates and exports the camera matrix to the Vertex Shader
 		camera.updateMatrix(45.0f, 0.1f, 2000.0f);
 
+
+		//////////////////////////////////////////////////////////////////////////////////////////////
+		Shader lightShader("light.vert", "light.frag");
+		// Activate the light shader for the sun
+		glm::mat4 lightModel = glm::mat4(1.0f);
+		lightModel = glm::translate(lightModel, lightPos);
+		lightShader.Activate();
+
+		// Set the light color uniform in the light shader
+		glUniformMatrix4fv(glGetUniformLocation(lightShader.ID, "model"), 1, GL_FALSE, glm::value_ptr(lightModel));
+		glUniform4f(glGetUniformLocation(lightShader.ID, "lightColor"), lightColor.x, lightColor.y, lightColor.z, lightColor.w);
+	
+		// Draw the sun at the center using the light shader
+		sun.Draw(lightShader, camera, sunPos, sunRot, glm::vec3(3.0f));
+		//////////////////////////////////////////////////////////////////////////////////////////////////
+		
 		// Draw the sun at the center
-		sun.Draw(shaderProgram, camera, sunPos, sunRot, glm::vec3(3.0f));
+       //  sun.Draw(shaderProgram, camera, sunPos, sunRot, glm::vec3(3.0f));
 
 		// Adjust lightings for the planets
-		shaderProgram.Activate();
-		glUniform4f(glGetUniformLocation(shaderProgram.ID, "lightColor"), lightColor.x, lightColor.y, lightColor.z, lightColor.w);
-		glUniform3f(glGetUniformLocation(shaderProgram.ID, "lightPos"), lightPos.x, lightPos.y, lightPos.z);
+     	shaderProgram.Activate();
+	    glUniform4f(glGetUniformLocation(shaderProgram.ID, "lightColor"), lightColor.x, lightColor.y, lightColor.z, lightColor.w);
+	    glUniform3f(glGetUniformLocation(shaderProgram.ID, "lightPos"), lightPos.x, lightPos.y, lightPos.z);
 
+
+	
 		// Draw the planets around the sun
 		mercury.Draw(shaderProgram, camera, mercuryPos, mercuryRot, glm::vec3(0.5f));
 		venus.Draw(shaderProgram, camera, venusPos, venusRot, glm::vec3(0.7f));

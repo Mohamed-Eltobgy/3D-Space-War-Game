@@ -27,21 +27,24 @@ uniform vec3 camPos;
 vec4 direcLight()
 {
 	// ambient lighting
-	float ambient = 0.50f;
+	float ambient = 0.999f;
 
 	// diffuse lighting
 	vec3 normal = normalize(Normal);
-	vec3 lightDirection = normalize(vec3(1.0f, 1.0f, -2.0f));
+	vec3 lightDirection = normalize(-crntPos);
 	float diffuse = max(dot(normal, lightDirection), 0.0f);
+
 
 	// specular lighting
 	float specularLight = 0.50f;
 	vec3 viewDirection = normalize(camPos - crntPos);
 	vec3 reflectionDirection = reflect(-lightDirection, normal);
-	float specAmount = pow(max(dot(viewDirection, reflectionDirection), 0.0f), 16);
+	float specAmount = pow(max(dot(viewDirection, reflectionDirection), 0.0f), 8);
 	float specular = specAmount * specularLight;
 
-	return (texture(diffuse0, texCoord) * (diffuse + ambient) + texture(specular0, texCoord).r * specular) * lightColor;
+
+	return texture(diffuse0, texCoord) * lightColor * (diffuse + ambient + specular);
+	//(texture(diffuse0, texCoord) * (diffuse + ambient) + texture(specular0, texCoord).r * specular) * lightColor;
 }
 
 void main()
