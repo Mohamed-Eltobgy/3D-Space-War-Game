@@ -149,9 +149,9 @@ int main()
 	std::string neptunePath = "/Resources/models/neptune/scene.gltf";
 
 	//std::string spaceShipPath = "/Resources/models/spaceship/spaceship.gltf";
-	//std::string spaceShipPath = "/Resources/models/spaceship/neghvar.obj";
-	std::string spaceShipPath = "/Resources/models/spaceship1/voyager.obj";
-
+	std::string spaceShipPath = "/Resources/models/spaceship/neghvar.obj";
+	//std::string spaceShipPath = "/Resources/models/spaceship1/voyager.obj";
+	//std::string spaceShipPath = "/Resources/models/backpack/backpack.obj";
 	
 	// Load in all models
 	Model sun((parentDir + sunPath).c_str());

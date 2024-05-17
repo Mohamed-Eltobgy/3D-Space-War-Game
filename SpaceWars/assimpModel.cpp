@@ -23,9 +23,10 @@ void AssimpModel::loadModel(string& path)
 {
     // read file via ASSIMP
     Assimp::Importer importer;
-    cout << path << endl;
+    cout << "before" << endl;
     const aiScene* scene = importer.ReadFile(path, aiProcess_Triangulate | aiProcess_GenSmoothNormals | aiProcess_FlipUVs | aiProcess_CalcTangentSpace);
-
+  
+    cout << "After" << endl;
     // check for errors
     if (!scene || scene->mFlags & AI_SCENE_FLAGS_INCOMPLETE || !scene->mRootNode) // if is Not Zero
     {
@@ -131,7 +132,7 @@ Mesh AssimpModel::processMesh(aiMesh* mesh, const aiScene* scene)
 
 // checks all material textures of a given type and loads the textures if they're not loaded yet.
 // the required info is returned as a Texture struct.
-vector<Texture> AssimpModel::loadMaterialTextures(aiMaterial* mat, aiTextureType type, string typeName)
+vector<Texture> AssimpModel::loadMaterialTextures(aiMaterial* mat, aiTextureType type, const char* typeName)
 {
     vector<Texture> textures;
  
@@ -155,7 +156,7 @@ vector<Texture> AssimpModel::loadMaterialTextures(aiMaterial* mat, aiTextureType
             string filename = string(str.C_Str());
             string filePath = this->directory + '/' + filename;
         
-            Texture texture(filePath.c_str(), typeName.c_str(), textures_loaded.size());
+            Texture texture(filePath.c_str(), typeName, textures_loaded.size());
             texture.name = filename;
 
             textures.push_back(texture);
