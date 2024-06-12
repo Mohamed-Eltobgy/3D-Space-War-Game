@@ -1,5 +1,8 @@
 #include<filesystem>
 #include"Model.h"
+#include "imgui.h"
+#include "imgui_impl_glfw.h"
+#include "imgui_impl_opengl3.h"
 
 // Window dimensions
 const unsigned int width = 1400;
@@ -93,6 +96,20 @@ void update() {
 	neptuneRot = glm::rotate(neptuneRot, glm::radians(rotationSpeed), glm::vec3(0.0f, 1.0f, 0.0f));
 }
 
+void menu() {
+	// Create a button and a label
+	static bool showButtonAndLabel = true;
+	if (showButtonAndLabel) {
+		ImGui::Begin("Controls");
+		if (ImGui::Button("Hide")) {
+			showButtonAndLabel = false;
+		}
+		ImGui::SameLine();
+		ImGui::Text("Press 'Hide' to hide this button and label");
+		ImGui::End();
+	}
+}
+
 // Main function
 int main()
 {
@@ -115,6 +132,13 @@ int main()
 	
 	// Introduce the window into the current context
 	glfwMakeContextCurrent(window);
+
+	IMGUI_CHECKVERSION();
+	ImGui::CreateContext();
+	ImGuiIO& io = ImGui::GetIO(); (void)io;
+	ImGui::StyleColorsDark();
+	ImGui_ImplGlfw_InitForOpenGL(window, true);
+	ImGui_ImplOpenGL3_Init("#version 330");
 
 	glfwWindowHint(GLFW_DOUBLEBUFFER, GLFW_TRUE);
 	glfwSwapInterval(1); // Enable VSync
@@ -283,20 +307,73 @@ int main()
 		// Generates random scales
 		scales[i] = 0.1f * glm::vec3(randf(), randf(), randf());
 	}
+
 	
+	bool showMenu = true;
+	short playMode = 0;
 	// Main while loop
 	while (!glfwWindowShouldClose(window))
 	{
-		// Clean the back buffer and depth buffer
+		glViewport(0, 0, width, height);
+		glfwPollEvents();
+
+		ImGui_ImplOpenGL3_NewFrame();
+		ImGui_ImplGlfw_NewFrame();
+		ImGui::NewFrame();
+		ImGui::SetNextWindowPos(ImVec2(0, 0));
+		ImGui::SetNextWindowSize(ImVec2(width, height));
+		ImGui::Begin("Menu", nullptr, ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoCollapse |
+			ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove);
+
+		ImGui::SetWindowFontScale(3.5f); // Increase font size
+		// Calculate the position for the title to be centered
+		ImVec2 titleSize = ImGui::CalcTextSize("Chicken Invaders EL-Ghalaba");
+		
+
+		ImVec2 titlePosition((width - titleSize.x) * 0.5f, 20.0f); // Centered horizontally, 20 pixels from top
+
+		// Draw the title
+		ImGui::SetCursorPos(titlePosition);
+		ImGui::Text("Chicken Invaders EL-Ghalaba");
+		ImGui::Dummy(ImVec2(0.0f, 20.0f)); // Empty line of 20 units height
+		ImGui::Dummy(ImVec2(0.0f, 20.0f));
+		ImGui::Dummy(ImVec2(0.0f, 20.0f));
+
+		ImGui::SetWindowFontScale(2.0f); // adjust font size.
+		ImGui::Text("Select Game Mode");
+		ImGui::Dummy(ImVec2(0.0f, 20.0f));
+
+		ImGui::Bullet();
+		ImGui::SameLine();
+		if (ImGui::Button("Time Attack Mode")) {
+			showMenu = !showMenu;
+			playMode = 1;
+		}
+
+		ImGui::Dummy(ImVec2(0.0f, 20.0f)); // Empty line of 20 units height
+		ImGui::Bullet();
+		ImGui::SameLine();
+		if (ImGui::Button("Survival Mode")) {
+			showMenu = !showMenu;
+			playMode = 2;
+		}
+
+		ImGui::SetWindowFontScale(1.0f); // return normal font size
+		ImGui::End();
+		ImGui::Render();
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+		ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
+
+
+		// Clean the back buffer and depth buffer
+		//glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+		if (!showMenu) {
 
 		// Handles camera inputs
 		camera.Inputs(window);
 
 		// Updates and exports the camera matrix to the Vertex Shader
 		camera.updateMatrix(45.0f, 0.1f, 2000.0f);
-
-		glViewport(0, 0, width, height);
 
 		// Draw the sun at the center
 		sun.Draw(shaderProgram, camera, sunPos, sunRot, glm::vec3(3.0f));
@@ -392,7 +469,7 @@ int main()
 
 		// Update the positions of the planets and their rotations
 		update();
-		
+
 		// Draw the asteroids around saturn only
 		for (unsigned int i = 0; i < number; i++)
 		{
@@ -436,11 +513,15 @@ int main()
 		glDepthFunc(GL_LESS);
 
 		// Swap the back buffer with the front buffer
+		}
 		glfwSwapBuffers(window);
 		//////////////////////------------------------------------------------------------------------------/////////////////////////
 		// Take care of all GLFW events
-		glfwPollEvents();
 	}
+
+	ImGui_ImplOpenGL3_Shutdown();
+	ImGui_ImplGlfw_Shutdown();
+	ImGui::DestroyContext();
 
 	// Delete all the objects
 	shaderProgram.Delete();
