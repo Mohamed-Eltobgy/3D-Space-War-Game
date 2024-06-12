@@ -70,8 +70,28 @@ float randf()
 {
 	return -1.0f + (rand() / (RAND_MAX / 2.0f));
 }
-
-
+void update() {
+	// Update the positions of the planets to orbit the sun with different speeds
+	mercuryPos = glm::vec3(mercuryPos.x * cos(0.005f) - mercuryPos.z * sin(-0.005f), 0.0f, mercuryPos.x * sin(-0.005f) + mercuryPos.z * cos(0.005f));
+	venusPos = glm::vec3(venusPos.x * cos(0.004f) - venusPos.z * sin(-0.004f), 0.0f, venusPos.x * sin(-0.004f) + venusPos.z * cos(0.004f));
+	earthPos = glm::vec3(earthPos.x * cos(0.003f) - earthPos.z * sin(-0.003f), 0.0f, earthPos.x * sin(-0.003f) + earthPos.z * cos(0.003f));
+	marsPos = glm::vec3(marsPos.x * cos(0.002f) - marsPos.z * sin(-0.002f), 0.0f, marsPos.x * sin(-0.002f) + marsPos.z * cos(0.002f));
+	jupiterPos = glm::vec3(jupiterPos.x * cos(0.001f) - jupiterPos.z * sin(-0.001f), 0.0f, jupiterPos.x * sin(-0.001f) + jupiterPos.z * cos(0.001f));
+	saturnPos = glm::vec3(saturnPos.x * cos(0.0005f) - saturnPos.z * sin(-0.0005f), 0.0f, saturnPos.x * sin(-0.0005f) + saturnPos.z * cos(0.0005f));
+	uranusPos = glm::vec3(uranusPos.x * cos(0.0004f) - uranusPos.z * sin(-0.0004f), 0.0f, uranusPos.x * sin(-0.0004f) + uranusPos.z * cos(0.0004f));
+	neptunePos = glm::vec3(neptunePos.x * cos(0.0003f) - neptunePos.z * sin(-0.0003f), 0.0f, neptunePos.x * sin(-0.0003f) + neptunePos.z * cos(0.0003f));
+	
+	// Update the sun's and planets' rotations
+	sunRot = glm::rotate(sunRot, glm::radians(rotationSpeed), glm::vec3(0.0f, 1.0f, 0.0f));
+	mercuryRot = glm::rotate(mercuryRot, glm::radians(rotationSpeed), glm::vec3(0.0f, 1.0f, 0.0f));
+	venusRot = glm::rotate(venusRot, glm::radians(rotationSpeed), glm::vec3(0.0f, 1.0f, 0.0f));
+	earthRot = glm::rotate(earthRot, glm::radians(rotationSpeed), glm::vec3(0.0f, 1.0f, 0.0f));
+	marsRot = glm::rotate(marsRot, glm::radians(rotationSpeed), glm::vec3(0.0f, 1.0f, 0.0f));
+	jupiterRot = glm::rotate(jupiterRot, glm::radians(rotationSpeed), glm::vec3(0.0f, 1.0f, 0.0f));
+	saturnRot = glm::rotate(saturnRot, glm::radians(rotationSpeed), glm::vec3(0.0f, 1.0f, 0.0f));
+	uranusRot = glm::rotate(uranusRot, glm::radians(rotationSpeed), glm::vec3(0.0f, 1.0f, 0.0f));
+	neptuneRot = glm::rotate(neptuneRot, glm::radians(rotationSpeed), glm::vec3(0.0f, 1.0f, 0.0f));
+}
 
 // Main function
 int main()
@@ -82,7 +102,7 @@ int main()
 	// Specify what version of OpenGL we are using (3.3)
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
-
+	
 	// Profile initialization for accessing OpenGL functions
 	glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 
@@ -96,6 +116,8 @@ int main()
 	// Introduce the window into the current context
 	glfwMakeContextCurrent(window);
 
+	glfwWindowHint(GLFW_DOUBLEBUFFER, GLFW_TRUE);
+	glfwSwapInterval(1); // Enable VSync
 	// Load GLAD for OpenGL configuration
 	gladLoadGL();
 
@@ -112,12 +134,6 @@ int main()
 	// The position of the light is at the sun
 	glm::vec3 lightPos = sunPos;
 
-
-	//////////////////////////////////////////////////////////////////////////////////////
-	
-
-    ////////////////////////////////////////////////////////////////////////////////////
-   	
 	// Activate the shader program
 	shaderProgram.Activate();
 	glUniform4f(glGetUniformLocation(shaderProgram.ID, "lightColor"), lightColor.x, lightColor.y, lightColor.z, lightColor.w);
@@ -130,11 +146,15 @@ int main()
 	glEnable(GL_DEPTH_TEST);
 
 	// Creates camera object with initial position: (-600, 0, 0)
-	Camera camera(width, height, glm::vec3(-600.0f, 0.0f, 0.0f));
+	Camera camera(width, height, glm::vec3(-600.0f, 0.0f, 0.0f)); 
 
 	// Adjust the camera to look at the sun
 	camera.Orientation = glm::vec3(1.0f, 0.0f, 0.0f);
 	
+	// Static Camera
+	Camera camera2(width, height, glm::vec3(0.0f, 1600.0f, 0.0f));
+	camera2.Orientation = glm::vec3(0.01f, -1.0f, 0.0f);
+
 	// Get the parent directory of the current directory
 	std::string parentDir = (std::filesystem::current_path().std::filesystem::path::parent_path()).string();
 
@@ -263,7 +283,7 @@ int main()
 		// Generates random scales
 		scales[i] = 0.1f * glm::vec3(randf(), randf(), randf());
 	}
-
+	
 	// Main while loop
 	while (!glfwWindowShouldClose(window))
 	{
@@ -276,32 +296,16 @@ int main()
 		// Updates and exports the camera matrix to the Vertex Shader
 		camera.updateMatrix(45.0f, 0.1f, 2000.0f);
 
+		glViewport(0, 0, width, height);
 
-		//////////////////////////////////////////////////////////////////////////////////////////////
-		Shader lightShader("light.vert", "light.frag");
-		// Activate the light shader for the sun
-		glm::mat4 lightModel = glm::mat4(1.0f);
-		lightModel = glm::translate(lightModel, lightPos);
-		lightShader.Activate();
-
-		// Set the light color uniform in the light shader
-		glUniformMatrix4fv(glGetUniformLocation(lightShader.ID, "model"), 1, GL_FALSE, glm::value_ptr(lightModel));
-		glUniform4f(glGetUniformLocation(lightShader.ID, "lightColor"), lightColor.x, lightColor.y, lightColor.z, lightColor.w);
-	
-		// Draw the sun at the center using the light shader
-		sun.Draw(lightShader, camera, sunPos, sunRot, glm::vec3(3.0f));
-		//////////////////////////////////////////////////////////////////////////////////////////////////
-		
 		// Draw the sun at the center
-       //  sun.Draw(shaderProgram, camera, sunPos, sunRot, glm::vec3(3.0f));
+		sun.Draw(shaderProgram, camera, sunPos, sunRot, glm::vec3(3.0f));
 
 		// Adjust lightings for the planets
-     	shaderProgram.Activate();
-	    glUniform4f(glGetUniformLocation(shaderProgram.ID, "lightColor"), lightColor.x, lightColor.y, lightColor.z, lightColor.w);
-	    glUniform3f(glGetUniformLocation(shaderProgram.ID, "lightPos"), lightPos.x, lightPos.y, lightPos.z);
+		shaderProgram.Activate();
+		glUniform4f(glGetUniformLocation(shaderProgram.ID, "lightColor"), lightColor.x, lightColor.y, lightColor.z, lightColor.w);
+		glUniform3f(glGetUniformLocation(shaderProgram.ID, "lightPos"), lightPos.x, lightPos.y, lightPos.z);
 
-
-	
 		// Draw the planets around the sun
 		mercury.Draw(shaderProgram, camera, mercuryPos, mercuryRot, glm::vec3(0.5f));
 		venus.Draw(shaderProgram, camera, venusPos, venusRot, glm::vec3(0.7f));
@@ -312,26 +316,8 @@ int main()
 		uranus.Draw(shaderProgram, camera, uranusPos, uranusRot, glm::vec3(1.0f));
 		neptune.Draw(shaderProgram, camera, neptunePos, neptuneRot, glm::vec3(1.0f));
 
-		// Update the positions of the planets to orbit the sun with different speeds
-		mercuryPos = glm::vec3(mercuryPos.x * cos(0.005f) - mercuryPos.z * sin(-0.005f), 0.0f, mercuryPos.x * sin(-0.005f) + mercuryPos.z * cos(0.005f));
-		venusPos = glm::vec3(venusPos.x * cos(0.004f) - venusPos.z * sin(-0.004f), 0.0f, venusPos.x * sin(-0.004f) + venusPos.z * cos(0.004f));
-		earthPos = glm::vec3(earthPos.x * cos(0.003f) - earthPos.z * sin(-0.003f), 0.0f, earthPos.x * sin(-0.003f) + earthPos.z * cos(0.003f));
-		marsPos = glm::vec3(marsPos.x * cos(0.002f) - marsPos.z * sin(-0.002f), 0.0f, marsPos.x * sin(-0.002f) + marsPos.z * cos(0.002f));
-		jupiterPos = glm::vec3(jupiterPos.x * cos(0.001f) - jupiterPos.z * sin(-0.001f), 0.0f, jupiterPos.x * sin(-0.001f) + jupiterPos.z * cos(0.001f));
-		saturnPos = glm::vec3(saturnPos.x * cos(0.0005f) - saturnPos.z * sin(-0.0005f), 0.0f, saturnPos.x * sin(-0.0005f) + saturnPos.z * cos(0.0005f));
-		uranusPos = glm::vec3(uranusPos.x * cos(0.0004f) - uranusPos.z * sin(-0.0004f), 0.0f, uranusPos.x * sin(-0.0004f) + uranusPos.z * cos(0.0004f));
-		neptunePos = glm::vec3(neptunePos.x * cos(0.0003f) - neptunePos.z * sin(-0.0003f), 0.0f, neptunePos.x * sin(-0.0003f) + neptunePos.z * cos(0.0003f));
-
-		// Update the sun's and planets' rotations
-		sunRot = glm::rotate(sunRot, glm::radians(rotationSpeed), glm::vec3(0.0f, 1.0f, 0.0f));
-		mercuryRot = glm::rotate(mercuryRot, glm::radians(rotationSpeed), glm::vec3(0.0f, 1.0f, 0.0f));
-		venusRot = glm::rotate(venusRot, glm::radians(rotationSpeed), glm::vec3(0.0f, 1.0f, 0.0f));
-		earthRot = glm::rotate(earthRot, glm::radians(rotationSpeed), glm::vec3(0.0f, 1.0f, 0.0f));
-		marsRot = glm::rotate(marsRot, glm::radians(rotationSpeed), glm::vec3(0.0f, 1.0f, 0.0f));
-		jupiterRot = glm::rotate(jupiterRot, glm::radians(rotationSpeed), glm::vec3(0.0f, 1.0f, 0.0f));
-		saturnRot = glm::rotate(saturnRot, glm::radians(rotationSpeed), glm::vec3(0.0f, 1.0f, 0.0f));
-		uranusRot = glm::rotate(uranusRot, glm::radians(rotationSpeed), glm::vec3(0.0f, 1.0f, 0.0f));
-		neptuneRot = glm::rotate(neptuneRot, glm::radians(rotationSpeed), glm::vec3(0.0f, 1.0f, 0.0f));
+		// Update the positions of the planets and their rotations
+		update();
 
 		// Draw the asteroids around saturn only
 		for (unsigned int i = 0; i < number; i++)
@@ -371,13 +357,87 @@ int main()
 		glBindTexture(GL_TEXTURE_CUBE_MAP, cubemapTexture);
 		glDrawElements(GL_TRIANGLES, 36, GL_UNSIGNED_INT, 0);
 		glBindVertexArray(0);
+		// Swap the back buffer with the front buffer
+		glfwSwapBuffers(window);
+		// Switch back to the normal depth function
+		glDepthFunc(GL_LESS);
+
+		//////////////////////////////////-----------------------------------------------------//////////////////////////////////
+		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+		// Set the viewport of additional camera to the right corner
+		int rightViewportWidth = width / 3;
+		int rightViewportX = width - rightViewportWidth;
+		glViewport(rightViewportX, 0, rightViewportWidth, height / 3);
+
+		// Updates and exports the camera matrix to the Vertex Shader
+		camera2.updateMatrix(45.0f, 0.1f, 2000.0f);
+
+		// Draw the sun at the center
+		sun.Draw(shaderProgram, camera2, sunPos, sunRot, glm::vec3(3.0f));
+
+		// Adjust lightings for the planets
+		shaderProgram.Activate();
+		glUniform4f(glGetUniformLocation(shaderProgram.ID, "lightColor"), lightColor.x, lightColor.y, lightColor.z, lightColor.w);
+		glUniform3f(glGetUniformLocation(shaderProgram.ID, "lightPos"), lightPos.x, lightPos.y, lightPos.z);
+
+		// Draw the planets around the sun
+		mercury.Draw(shaderProgram, camera2, mercuryPos, mercuryRot, glm::vec3(0.5f));
+		venus.Draw(shaderProgram, camera2, venusPos, venusRot, glm::vec3(0.7f));
+		earth.Draw(shaderProgram, camera2, earthPos, earthRot, glm::vec3(0.8f));
+		mars.Draw(shaderProgram, camera2, marsPos, marsRot, glm::vec3(0.6f));
+		jupiter.Draw(shaderProgram, camera2, jupiterPos, jupiterRot, glm::vec3(1.5f));
+		saturn.Draw(shaderProgram, camera2, saturnPos, saturnRot, glm::vec3(1.2f));
+		uranus.Draw(shaderProgram, camera2, uranusPos, uranusRot, glm::vec3(1.0f));
+		neptune.Draw(shaderProgram, camera2, neptunePos, neptuneRot, glm::vec3(1.0f));
+
+		// Update the positions of the planets and their rotations
+		update();
+		
+		// Draw the asteroids around saturn only
+		for (unsigned int i = 0; i < number; i++)
+		{
+			asteroid.Draw(shaderProgram, camera2, translations[i], rotations[i], scales[i]);
+		}
+
+		// Update the asteroid positions to orbit the sun with saturn
+		for (unsigned int i = 0; i < number; i++)
+		{
+			translations[i] = glm::vec3(translations[i].x * cos(0.0005f) - translations[i].z * sin(-0.0005f), translations[i].y, translations[i].x * sin(-0.0005f) + translations[i].z * cos(0.0005f));
+		}
+
+		// Switch to the equal depth function to render the skybox as the last object since it always has to be at the back
+		glDepthFunc(GL_LEQUAL);
+
+		// Activate the skybox shader
+		skyboxShader.Activate();
+
+		// Set the view and projection matrix for the skybox
+		glm::mat4 view2 = glm::mat4(1.0f);
+		glm::mat4 projection2 = glm::mat4(1.0f);
+
+		// Remove the translation part of the view matrix
+		view2 = glm::mat4(glm::mat3(glm::lookAt(camera2.Position, camera2.Position + camera2.Orientation, camera2.Up)));
+
+		// Set the projection matrix for the skybox
+		projection2 = glm::perspective(glm::radians(45.0f), (float)width / height, 0.1f, 100.0f);
+
+		// Set the view and projection matrix in the shader
+		glUniformMatrix4fv(glGetUniformLocation(skyboxShader.ID, "view"), 1, GL_FALSE, glm::value_ptr(view2));
+		glUniformMatrix4fv(glGetUniformLocation(skyboxShader.ID, "projection"), 1, GL_FALSE, glm::value_ptr(projection2));
+
+		// Draw the skybox
+		glBindVertexArray(skyboxVAO);
+		glActiveTexture(GL_TEXTURE0);
+		glBindTexture(GL_TEXTURE_CUBE_MAP, cubemapTexture);
+		glDrawElements(GL_TRIANGLES, 36, GL_UNSIGNED_INT, 0);
+		glBindVertexArray(0);
 
 		// Switch back to the normal depth function
 		glDepthFunc(GL_LESS);
 
 		// Swap the back buffer with the front buffer
 		glfwSwapBuffers(window);
-
+		//////////////////////------------------------------------------------------------------------------/////////////////////////
 		// Take care of all GLFW events
 		glfwPollEvents();
 	}
