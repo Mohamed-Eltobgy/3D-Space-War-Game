@@ -5,7 +5,8 @@ AssimpModel::AssimpModel(string& path)
 {
     loadModel(path);
     //for (auto mesh : meshes) {
-    //    cout << mesh.textures.size() << endl;
+    //    cout << mesh.vertices.size() << endl;
+    //    //cout << mesh.textures.size() << endl;
     //}
 }
 

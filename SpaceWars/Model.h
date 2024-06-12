@@ -22,14 +22,13 @@ public:
 		glm::vec3 scale = glm::vec3(1.0f, 1.0f, 1.0f)
 	);
 
+	// All the meshes and transformations
+	std::vector<Mesh> meshes;
 private:
 	// Variables for easy access
 	const char* file;
 	std::vector<unsigned char> data;
 	json JSON;
-
-	// All the meshes and transformations
-	std::vector<Mesh> meshes;
 
 	// Prevents textures from being loaded twice
 	std::vector<std::string> loadedTexName;
