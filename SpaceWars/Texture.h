@@ -3,7 +3,7 @@
 
 #include<glad/glad.h>
 #include<stb/stb_image.h>
-
+#include<string>
 #include"shaderClass.h"
 
 class Texture
@@ -11,6 +11,7 @@ class Texture
 public:
 	GLuint ID;
 	const char* type;
+	std::string name;
 	GLuint unit;
 
 	Texture(const char* image, const char* texType, GLuint slot);
