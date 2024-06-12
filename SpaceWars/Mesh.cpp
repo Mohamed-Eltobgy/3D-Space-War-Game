@@ -27,7 +27,6 @@ void Mesh::Draw
 (
 	Shader& shader, 
 	Camera& camera,
-	glm::mat4 matrix,
 	glm::vec3 translation, 
 	glm::quat rotation, 
 	glm::vec3 scale
@@ -52,7 +51,7 @@ void Mesh::Draw
 		else if (type == "specular")
 		{
 			num = std::to_string(numSpecular++);
-		}
+		} 
 		textures[i].texUnit(shader, (type + num).c_str(), i);
 		textures[i].Bind();
 	}
@@ -74,7 +73,6 @@ void Mesh::Draw
 	glUniformMatrix4fv(glGetUniformLocation(shader.ID, "translation"), 1, GL_FALSE, glm::value_ptr(trans));
 	glUniformMatrix4fv(glGetUniformLocation(shader.ID, "rotation"), 1, GL_FALSE, glm::value_ptr(rot));
 	glUniformMatrix4fv(glGetUniformLocation(shader.ID, "scale"), 1, GL_FALSE, glm::value_ptr(sca));
-	glUniformMatrix4fv(glGetUniformLocation(shader.ID, "model"), 1, GL_FALSE, glm::value_ptr(matrix));
 
 	// Draw the actual mesh
 	glDrawElements(GL_TRIANGLES, indices.size(), GL_UNSIGNED_INT, 0);

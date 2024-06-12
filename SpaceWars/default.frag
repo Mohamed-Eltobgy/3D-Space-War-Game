@@ -1,8 +1,5 @@
 #version 330 core
 
-// Outputs colors in RGBA
-out vec4 FragColor;
-
 // Imports the current position from the Vertex Shader
 in vec3 crntPos;
 // Imports the normal from the Vertex Shader
@@ -13,15 +10,19 @@ in vec3 color;
 in vec2 texCoord;
 
 
-
 // Gets the Texture Units from the main function
 uniform sampler2D diffuse0;
 uniform sampler2D specular0;
+
 // Gets the color of the light from the main function
 uniform vec4 lightColor;
 
 // Gets the position of the camera from the main function
 uniform vec3 camPos;
+
+
+// Outputs colors in RGBA
+out vec4 FragColor;
 
 
 vec4 direcLight()

@@ -1,0 +1,39 @@
+﻿  Camera.cpp
+  EBO.cpp
+  Main.cpp
+  Mesh.cpp
+  Model.cpp
+C:\Users\MARWAN\Desktop\CSED\Computer Engineering Year 3\2nd Semester\Graphics\3D-Space-War-Game\SpaceWars\Model.cpp(231,20): warning C4018: '<': signed/unsigned mismatch
+C:\Users\MARWAN\Desktop\CSED\Computer Engineering Year 3\2nd Semester\Graphics\3D-Space-War-Game\SpaceWars\Model.cpp(250,20): warning C4018: '<': signed/unsigned mismatch
+C:\Users\MARWAN\Desktop\CSED\Computer Engineering Year 3\2nd Semester\Graphics\3D-Space-War-Game\SpaceWars\Model.cpp(259,20): warning C4018: '<': signed/unsigned mismatch
+  shaderClass.cpp
+C:\Users\MARWAN\Desktop\CSED\Computer Engineering Year 3\2nd Semester\Graphics\3D-Space-War-Game\SpaceWars\shaderClass.cpp(11,27): warning C4244: 'argument': conversion from 'std::streamoff' to 'const unsigned int', possible loss of data
+  stb.cpp
+  Texture.cpp
+  VAO.cpp
+  VBO.cpp
+  glad.c
+Camera.obj : error LNK2001: unresolved external symbol _glfwGetKey
+Camera.obj : error LNK2001: unresolved external symbol _glfwGetMouseButton
+Camera.obj : error LNK2001: unresolved external symbol _glfwSetInputMode
+Camera.obj : error LNK2001: unresolved external symbol _glfwSetCursorPos
+Camera.obj : error LNK2001: unresolved external symbol _glfwGetCursorPos
+Main.obj : error LNK2001: unresolved external symbol _glfwSwapBuffers
+Main.obj : error LNK2001: unresolved external symbol _aiGetMaterialTextureCount
+Main.obj : error LNK2001: unresolved external symbol _glfwGetVideoMode
+Main.obj : error LNK2001: unresolved external symbol _glfwTerminate
+Main.obj : error LNK2001: unresolved external symbol _glfwPollEvents
+Main.obj : error LNK2001: unresolved external symbol _glfwInit
+Main.obj : error LNK2001: unresolved external symbol _glfwCreateWindow
+Main.obj : error LNK2001: unresolved external symbol _glfwWindowHint
+Main.obj : error LNK2001: unresolved external symbol _glfwMakeContextCurrent
+Main.obj : error LNK2001: unresolved external symbol _glfwDestroyWindow
+Main.obj : error LNK2001: unresolved external symbol "public: char const * __thiscall Assimp::Importer::GetErrorString(void)const " (?GetErrorString@Importer@Assimp@@QBEPBDXZ)
+Main.obj : error LNK2001: unresolved external symbol "public: struct aiScene const * __thiscall Assimp::Importer::ReadFile(char const *,unsigned int)" (?ReadFile@Importer@Assimp@@QAEPBUaiScene@@PBDI@Z)
+Main.obj : error LNK2001: unresolved external symbol "public: __thiscall Assimp::Importer::~Importer(void)" (??1Importer@Assimp@@QAE@XZ)
+Main.obj : error LNK2001: unresolved external symbol "public: __thiscall Assimp::Importer::Importer(void)" (??0Importer@Assimp@@QAE@XZ)
+Main.obj : error LNK2001: unresolved external symbol _glfwGetPrimaryMonitor
+Main.obj : error LNK2001: unresolved external symbol _aiGetMaterialTexture
+Main.obj : error LNK2001: unresolved external symbol _glfwWindowShouldClose
+Main.obj : error LNK2001: unresolved external symbol _glfwSetWindowPos
+C:\Users\MARWAN\Desktop\CSED\Computer Engineering Year 3\2nd Semester\Graphics\3D-Space-War-Game\SpaceWars\Release\SpaceWars.exe : fatal error LNK1120: 23 unresolved externals
