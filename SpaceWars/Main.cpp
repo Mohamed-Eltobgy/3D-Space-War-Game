@@ -3,8 +3,6 @@
 #include "imgui.h"
 #include "imgui_impl_glfw.h"
 #include "imgui_impl_opengl3.h"
-#include <filesystem>
-#include "Model.h"
 #include "assimpModel.h"
 #include "Planet.h"
 #include "BulletCollision/CollisionShapes/btConvexHullShape.h"
@@ -13,6 +11,7 @@
 #include "BulletCollision/NarrowPhaseCollision/btGjkPairDetector.h"
 #include "BulletCollision/NarrowPhaseCollision/btPointCollector.h"
 #include "skyBox.h"
+#include "spaceShip.h"
 
 
 // Window dimensions
@@ -107,7 +106,7 @@ int main()
 	glEnable(GL_DEPTH_TEST);
 
 	// Creates camera object with initial position: (-600, 0, 0)
-	Camera camera(width, height, glm::vec3(-600.0f, 0.0f, 0.0f)); 
+	Camera camera(width, height, glm::vec3(-600.0f, 20.0f, 0.0f)); 
 
 	// Adjust the camera to look at the sun
 	camera.Orientation = glm::vec3(1.0f, 0.0f, 0.0f);
@@ -117,8 +116,9 @@ int main()
 	camera2.Orientation = glm::vec3(0.01f, -1.0f, 0.0f);
 
 	//spaceShip pos and Rot
-	glm::vec3 spaceShipPos = camera.Position + camera.Orientation + glm::vec3(50.0,0.0,0.0);
-	glm::quat spaceShipRot = glm::rotate(glm::quat(1.0f, 0.0f, 0.0f, 0.0f), glm::radians(-90.0f), glm::vec3(0.0f, 1.0f, 0.0f));
+	glm::vec3 spaceShipPos = glm::vec3(-530.0f, 0.0f, 0.0f);
+	glm::vec3 spaceShipScale = glm::vec3(3.0f);
+	//glm::quat spaceShipRot = glm::rotate(glm::quat(1.0f, 0.0f, 0.0f, 0.0f), glm::radians(-90.0f), glm::vec3(0.0f, 1.0f, 0.0f));
 
 	// Get the parent directory of the current directory
 	std::string parentDir = (std::filesystem::current_path().std::filesystem::path::parent_path()).string();
@@ -178,7 +178,7 @@ int main()
 
 	//Model spaceShip((parentDir + spaceShipPath).c_str());
 	string path = parentDir + spaceShipPath;
-	AssimpModel spaceShip(path);
+	SpaceShip spaceShip(path,width,height,spaceShipPos,spaceShipScale);
 
 	//potion
 	//std::string potionPath = "/Resources/models/anaaa/scene.obj";
@@ -315,10 +315,7 @@ int main()
 			
 			glViewport(0, 0, width, height);
 			// Handles camera inputs
-			camera.Inputs(window);
-
-			// Updates and exports the camera matrix to the Vertex Shader
-			camera.updateMatrix(45.0f, 0.1f, 2000.0f);
+			//camera.Inputs(window);
 
 			// Adjust lightings for the planets
 			shaderProgram.Activate();
@@ -329,8 +326,13 @@ int main()
 			for (Planet &p : planets) {
 				p.draw(shaderProgram, camera);
 			}
-		
-			spaceShip.Draw(shaderProgram, camera, spaceShipPos, spaceShipRot, glm::vec3(4.0f));
+			
+			//update spaceship position and rotation
+			spaceShip.update(window,camera);
+			// Updates and exports the camera matrix to the Vertex Shader
+			camera.updateMatrix(45.0f, 0.1f, 2000.0f);
+			//draw the space ship
+			spaceShip.draw(shaderProgram, camera);
 			//spaceShipPos += glm::vec3(0.1f, 0.0f, 0.0f);
 			
 			// Update the sun's and planets' rotations
