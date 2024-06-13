@@ -31,26 +31,6 @@ float randf()
 	return -1.0f + (rand() / (RAND_MAX / 2.0f));
 }
 
-//btConvexHullShape* createConvexHull(const std::vector<Vertex>& vertices) {
-//	btConvexHullShape* hull = new btConvexHullShape();
-//	for (const Vertex& v : vertices) {
-//		hull->addPoint(btVector3(v.position.x, v.position.y, v.position.z));
-//	}
-//	return hull;
-//}
-//
-//bool checkCollision(btConvexHullShape* shape1, btConvexHullShape* shape2) {
-//	btGjkPairDetector::ClosestPointInput input;
-//	
-//	btVoronoiSimplexSolver simplexSolver;
-//	btGjkPairDetector gjkDetector(shape1, shape2, &simplexSolver, nullptr);
-//
-//	btPointCollector result;
-//	gjkDetector.getClosestPoints(input, result, nullptr);
-//
-//	return result.m_hasResult && result.m_distance <= 0.0f;
-//}
-
 // Vertex Shader source code
 const char* vertexShaderSource = "#version 330 core\n"
 "layout (location = 0) in vec3 aPos;\n"
@@ -78,8 +58,6 @@ void menu(int width, int height) {
 	ImGui::SetWindowFontScale(3.5f); // Increase font size
 	// Calculate the position for the title to be centered
 	ImVec2 titleSize = ImGui::CalcTextSize("Chicken Invaders EL-Ghalaba");
-
-
 	ImVec2 titlePosition((width - titleSize.x) * 0.5f, 20.0f); // Centered horizontally, 20 pixels from top
 
 	// Draw the title
@@ -220,11 +198,11 @@ int main()
 	Camera camera2(width, height, glm::vec3(0.0f, 1600.0f, 0.0f));
 	camera2.Orientation = glm::vec3(0.01f, -1.0f, 0.0f);
 
-	//spaceShip pos and Rot
+	// spaceShip pos and Rot
 	glm::vec3 spaceShipPos = camera.Position + camera.Orientation + glm::vec3(50.0,0.0,0.0);
 	glm::quat spaceShipRot = glm::rotate(glm::quat(1.0f, 0.0f, 0.0f, 0.0f), glm::radians(-90.0f), glm::vec3(0.0f, 1.0f, 0.0f));
 
-	//potion pos and rot
+	// potion pos and rot
 	std::random_device rd;  // Obtain a random number from hardware
 	std::mt19937 gen(rd()); // Seed the generator
 
@@ -314,9 +292,6 @@ int main()
 	//for (Mesh m : earth.meshes)
 	//	for (Vertex v : m.vertices)
 	//		spaceShipVertices.push_back(v);
-	//
-	//btConvexHullShape* hull1 = createConvexHull(sunVertices);
-	//btConvexHullShape* hull2 = createConvexHull(spaceShipVertices);	
 	
 	// Paths to all the faces of the cubemap
 	std::vector<std::string> facesCubemap =
@@ -412,6 +387,10 @@ int main()
 	double startTime;
 	double countdownDuration = 10.0;
 	double elapsedTime, remainingTime = 10;
+	float collisionTimer = 0.0f;
+	float lastCollisionTime = 0.0f;
+	bool isColliding = false;
+
 	// Main while loop
 	while (!glfwWindowShouldClose(window))
 	{
@@ -448,7 +427,7 @@ int main()
 			glClear(GL_COLOR_BUFFER_BIT);
 			
 			updateHp(hp, VAO, VBO, rectProgram);
-
+			float currentTime = glfwGetTime();
 			// Define proximity threshold
 			float proximityThreshold = 37.0f; // Adjust this as needed
 
@@ -520,6 +499,42 @@ int main()
 			{
 				translations[i] = glm::vec3(translations[i].x * cos(0.0005f) - translations[i].z * sin(-0.0005f), translations[i].y, translations[i].x * sin(-0.0005f) + translations[i].z * cos(0.0005f));
 			}
+			isColliding = false;
+			for (int i = 0; i < planets.size(); i++) {
+				float distanceToPlanet = glm::distance(camera.Position, planets[i].planetPos);
+				float pr;
+				switch (i){
+				case 0:  // sun
+					pr = 95;	break;
+				case 1:  // mercury
+					pr = 25;	break;
+				case 2:  // venus
+					pr = 30;	break;
+				case 3:  // earth
+					pr = 35;	break;
+				case 4:  // mars
+					pr = 35;	break;
+				case 5:  // jupiter
+					pr = 55;	break;
+				case 6:  // saturn
+					pr = 50;	break;
+				case 7:  // uranus
+					pr = 45;	break;
+				case 8:  // neptune
+					pr = 45;	break;
+				}
+
+				// Ensure the camera doesn't penetrate the planet
+				if (distanceToPlanet < pr) {
+					glm::vec3 directionToPlanet = glm::normalize(camera.Position - planets[i].planetPos);
+					camera.Position = planets[i].planetPos + directionToPlanet * pr;
+					if (currentTime - lastCollisionTime >= 1) {
+						hp -= 10;
+						lastCollisionTime = currentTime;
+					}
+				}
+			}
+			
 
 			//Draw the skyBox
 			skybox.draw(camera, width, height);
