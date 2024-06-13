@@ -14,6 +14,9 @@
 #include "BulletCollision/NarrowPhaseCollision/btPointCollector.h"
 #include "skyBox.h"
 #include <random>
+#include "SoundDevice.h"
+#include "SoundBuffer.h"
+#include "SoundSource.h"
 
 // Window dimensions
 const unsigned int width = 1400;
@@ -381,6 +384,19 @@ int main()
 
 	// Update HP initially
 	//updateHp(hp, VAO, VBO);
+
+	// Initialize the sound device and effects
+	SoundDevice* soundDevice = SoundDevice::get();
+	uint32_t healSound = SoundBuffer::get()->addSoundEffect("F:\\My Projects\\3D-Space-War-Game\\Resources\\sounds\\heal.ogg");
+	uint32_t mainMenuSound = SoundBuffer::get()->addSoundEffect("F:\\My Projects\\3D-Space-War-Game\\Resources\\sounds\\mainmenu.ogg");
+	uint32_t crashSound = SoundBuffer::get()->addSoundEffect("F:\\My Projects\\3D-Space-War-Game\\Resources\\sounds\\shipcrash.ogg");
+	uint32_t shootingSound = SoundBuffer::get()->addSoundEffect("F:\\My Projects\\3D-Space-War-Game\\Resources\\sounds\\shooting.ogg");
+
+	SoundSource speaker;
+
+	// Play the main menu sound
+	speaker.Play(mainMenuSound);
+	//std::cout << "Sound1: " << sound1 << std::endl;
 	
 	bool showMenu = true;
 	short playMode = 0;
@@ -394,6 +410,7 @@ int main()
 	// Main while loop
 	while (!glfwWindowShouldClose(window))
 	{
+		// Clear the screen
 		glViewport(0, 0, width, height);
 		glfwPollEvents();
 		
@@ -402,6 +419,8 @@ int main()
 		ImGui::Bullet();
 		ImGui::SameLine();
 		if (ImGui::Button("Time Attack Mode")) {
+			// Stop the main menu sound
+			speaker.Stop();
 			showMenu = !showMenu;
 			playMode = 1;
 			startTime = glfwGetTime();
@@ -411,6 +430,7 @@ int main()
 		ImGui::Bullet();
 		ImGui::SameLine();
 		if (ImGui::Button("Survival Mode")) {
+			speaker.Stop();
 			showMenu = !showMenu;
 			playMode = 2;
 			startTime = glfwGetTime();
@@ -433,29 +453,34 @@ int main()
 
 			// Check if spaceship is near the potion
 			if (glm::distance(camera.Position, potionPos1) < proximityThreshold) {
-				hp += 10; // Adjust this value as needed
+				speaker.Play(healSound);
+				hp += 10;	// Subject to change
 				if (hp > 100.0f)
 					hp = 100.0f; // Cap HP to 100
 				potionPos1 = glm::vec3(dist(gen), dist(gen), dist(gen));
 			} else if (glm::distance(camera.Position, potionPos2) < proximityThreshold) {
-				hp += 10; // Adjust this value as needed
+				speaker.Play(healSound);
+				hp += 10;
 				if (hp > 100.0f)
-					hp = 100.0f; // Cap HP to 100
+					hp = 100.0f;
 				potionPos2 = glm::vec3(dist(gen), dist(gen), dist(gen));
 			} else if (glm::distance(camera.Position, potionPos3) < proximityThreshold) {
-				hp += 10; // Adjust this value as needed
+				speaker.Play(healSound);
+				hp += 10;
 				if (hp > 100.0f)
-					hp = 100.0f; // Cap HP to 100
+					hp = 100.0f;
 				potionPos3 = glm::vec3(dist(gen), dist(gen), dist(gen));
 			} else if (glm::distance(camera.Position, potionPos4) < proximityThreshold) {
-				hp += 10; // Adjust this value as needed
+				speaker.Play(healSound);
+				hp += 10;
 				if (hp > 100.0f)
-					hp = 100.0f; // Cap HP to 100
+					hp = 100.0f;
 				potionPos4 = glm::vec3(dist(gen), dist(gen), dist(gen));
 			} else if (glm::distance(camera.Position, potionPos5) < proximityThreshold) {
-				hp += 10; // Adjust this value as needed
+				speaker.Play(healSound);
+				hp += 10;
 				if (hp > 100.0f)
-					hp = 100.0f; // Cap HP to 100
+					hp = 100.0f;
 				potionPos5 = glm::vec3(dist(gen), dist(gen), dist(gen));
 			}
 			glViewport(0, 0, width, height);
@@ -531,6 +556,7 @@ int main()
 					if (currentTime - lastCollisionTime >= 1) {
 						hp -= 10;
 						lastCollisionTime = currentTime;
+						speaker.Play(crashSound);
 					}
 				}
 			}
@@ -540,7 +566,7 @@ int main()
 			skybox.draw(camera, width, height);
 
 			//////////////////////////////////-----------------------------------------------------//////////////////////////////////
-			// Set the viewport of additional camera to the right corner
+			// Set the viewport of additional camera to the lower right corner
 			glClear(GL_DEPTH_BUFFER_BIT);
 			int rightViewportWidth = width / 3.75;
 			int rightViewportX = width - rightViewportWidth;

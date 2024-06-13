@@ -178,6 +178,9 @@
     <ClCompile Include="Planet.cpp" />
     <ClCompile Include="shaderClass.cpp" />
     <ClCompile Include="skyBox.cpp" />
+    <ClCompile Include="SoundBuffer.cpp" />
+    <ClCompile Include="SoundDevice.cpp" />
+    <ClCompile Include="SoundSource.cpp" />
     <ClCompile Include="stb.cpp" />
     <ClCompile Include="Texture.cpp" />
     <ClCompile Include="VAO.cpp" />
@@ -201,6 +204,9 @@
     <ClInclude Include="Planet.h" />
     <ClInclude Include="shaderClass.h" />
     <ClInclude Include="skyBox.h" />
+    <ClInclude Include="SoundBuffer.h" />
+    <ClInclude Include="SoundDevice.h" />
+    <ClInclude Include="SoundSource.h" />
     <ClInclude Include="Texture.h" />
     <ClInclude Include="VAO.h" />
     <ClInclude Include="VBO.h" />
