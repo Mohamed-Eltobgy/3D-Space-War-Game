@@ -1,19 +1,13 @@
 #include <filesystem>
+#include <random>
 #include "Model.h"
 #include "imgui.h"
 #include "imgui_impl_glfw.h"
 #include "imgui_impl_opengl3.h"
-#include <filesystem>
 #include "Model.h"
 #include "assimpModel.h"
 #include "Planet.h"
-#include "BulletCollision/CollisionShapes/btConvexHullShape.h"
-#include "BulletDynamics/btBulletDynamicsCommon.h"
-#include "BulletCollision/btBulletCollisionCommon.h"
-#include "BulletCollision/NarrowPhaseCollision/btGjkPairDetector.h"
-#include "BulletCollision/NarrowPhaseCollision/btPointCollector.h"
 #include "skyBox.h"
-#include <random>
 #include "SoundDevice.h"
 #include "SoundBuffer.h"
 #include "SoundSource.h"
@@ -281,20 +275,9 @@ int main()
 	//potion
 	std::string potionPath = "/Resources/models/potion/scene.gltf";
 	string path1 = parentDir + potionPath;
-	////Model potion(path1.c_str());
 	AssimpModel potion1(path1);		AssimpModel potion2(path1);
 	AssimpModel potion3(path1);		AssimpModel potion4(path1);
 	AssimpModel potion5(path1);
-
-	//std::vector<Vertex> sunVertices;
-	//for (Mesh m : sun.meshes)
-	//	for (Vertex v : m.vertices)
-	//		sunVertices.push_back(v);
-
-	//std::vector<Vertex> spaceShipVertices;
-	//for (Mesh m : earth.meshes)
-	//	for (Vertex v : m.vertices)
-	//		spaceShipVertices.push_back(v);
 	
 	// Paths to all the faces of the cubemap
 	std::vector<std::string> facesCubemap =
@@ -387,10 +370,10 @@ int main()
 
 	// Initialize the sound device and effects
 	SoundDevice* soundDevice = SoundDevice::get();
-	uint32_t healSound = SoundBuffer::get()->addSoundEffect("F:\\My Projects\\3D-Space-War-Game\\Resources\\sounds\\heal.ogg");
-	uint32_t mainMenuSound = SoundBuffer::get()->addSoundEffect("F:\\My Projects\\3D-Space-War-Game\\Resources\\sounds\\mainmenu.ogg");
-	uint32_t crashSound = SoundBuffer::get()->addSoundEffect("F:\\My Projects\\3D-Space-War-Game\\Resources\\sounds\\shipcrash.ogg");
-	uint32_t shootingSound = SoundBuffer::get()->addSoundEffect("F:\\My Projects\\3D-Space-War-Game\\Resources\\sounds\\shooting.ogg");
+	uint32_t healSound = SoundBuffer::get()->addSoundEffect((parentDir + "/Resources/sounds/heal.ogg").c_str());
+	uint32_t mainMenuSound = SoundBuffer::get()->addSoundEffect((parentDir + "/Resources/sounds/mainmenu.ogg").c_str());
+	uint32_t crashSound = SoundBuffer::get()->addSoundEffect((parentDir + "/Resources/sounds/shipcrash.ogg").c_str());
+	uint32_t shootingSound = SoundBuffer::get()->addSoundEffect((parentDir + "/Resources/sounds/mainmenu.ogg").c_str());
 
 	SoundSource speaker;
 
@@ -560,7 +543,6 @@ int main()
 					}
 				}
 			}
-			
 
 			//Draw the skyBox
 			skybox.draw(camera, width, height);
@@ -606,9 +588,7 @@ int main()
 				translations[i] = glm::vec3(translations[i].x * cos(0.0005f) - translations[i].z * sin(-0.0005f), translations[i].y, translations[i].x * sin(-0.0005f) + translations[i].z * cos(0.0005f));
 			}
 
-			// Activate the skybox shader
-			//skyboxShader.Activate();
-			skybox.draw(camera, width, height);
+			skybox.draw(camera2, width, height);
 
 			ImGui_ImplOpenGL3_NewFrame();
 			ImGui_ImplGlfw_NewFrame();
@@ -632,7 +612,7 @@ int main()
 			glClear(GL_DEPTH_BUFFER_BIT);
 			ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
 		
-			if (remainingTime <= 0 || hp == 0) {
+			if (remainingTime <= 0 || hp <= 0) {
 				gameOver(width, height);
 			}
 		}
