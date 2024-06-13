@@ -1,15 +1,3 @@
-<<<<<<< HEAD
-﻿<?xml version="1.0" encoding="utf-8"?>
-<Project>
-  <ProjectOutputs>
-    <ProjectOutput>
-      <FullPath>D:\[Mohamed]\[Mohamed]\Computer Third year\Second term (eighth)\Graphics\Project\3D-Space-War-Game\SpaceWars\x64\Debug\SpaceWars.exe</FullPath>
-    </ProjectOutput>
-  </ProjectOutputs>
-  <ContentFiles />
-  <SatelliteDlls />
-  <NonRecipeFileRefs />
-=======
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project>
   <ProjectOutputs>
@@ -20,5 +8,4 @@
   <ContentFiles />
   <SatelliteDlls />
   <NonRecipeFileRefs />
->>>>>>> Marwan
 </Project>

@@ -1,0 +1,41 @@
+# Aspose.3D Wavefront OBJ Exporter
+# Copyright 2004-2024 Aspose Pty Ltd.
+# File created: 06/13/2024 00:44:53
+
+newmtl Elixir1
+	illum 2
+	Kd 1 1 1
+	Ke 0 0 0
+	Pr 1
+	Pm 1
+	d 1
+	Tr 0
+	map_Kd Elixir1_baseColor.jpeg
+	map_Pr Elixir1_metallicRoughness.png
+	map_Pm Elixir1_metallicRoughness.png
+	norm Elixir1_normal.jpeg
+newmtl FillElixir1
+	illum 2
+	Kd 1 1 1
+	Ke 1 1 1
+	Pr 1
+	Pm 1
+	d 1
+	Tr 0
+	map_Kd FillElixir1_baseColor.jpeg
+	map_Ke FillElixir1_emissive.jpeg
+	map_Pr FillElixir1_metallicRoughness.png
+	map_Pm FillElixir1_metallicRoughness.png
+	norm FillElixir1_normal.jpeg
+newmtl GlassElixir1
+	illum 2
+	Kd 1 1 1
+	Ke 0 0 0
+	Pr 1
+	Pm 1
+	d 1
+	Tr 0
+	map_Kd GlassElixir1_baseColor.png
+	map_Pr GlassElixir1_metallicRoughness.png
+	map_Pm GlassElixir1_metallicRoughness.png
+	norm GlassElixir1_normal.jpeg
