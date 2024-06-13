@@ -133,7 +133,28 @@ void updateHp(float hp, GLuint& VAO, GLuint& VBO, GLuint rectProgram) {
 	glBindVertexArray(0);
 }
 
+void gameOver(int width, int height) {
+	ImGui_ImplOpenGL3_NewFrame();
+	ImGui_ImplGlfw_NewFrame();
+	ImGui::NewFrame();
+	ImGui::SetNextWindowPos(ImVec2(0, 0));
+	ImGui::SetNextWindowSize(ImVec2(width, height));
+	ImGui::Begin("Menu", nullptr, ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoCollapse |
+		ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove);
+	ImGui::Dummy(ImVec2(0, 100));
+	ImGui::SetWindowFontScale(5.0f);
+	ImVec2 titleSize = ImGui::CalcTextSize("Game Over");
 
+	ImVec2 titlePosition((width - titleSize.x) * 0.5f, 120.0f); // Centered horizontally, 120 pixels from top
+
+	// Draw the title
+	ImGui::SetCursorPos(titlePosition);
+	ImGui::Text("Game Over");
+	ImGui::End();
+	ImGui::Render();
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+	ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
+}
 // Main function
 int main()
 {
@@ -388,6 +409,9 @@ int main()
 	
 	bool showMenu = true;
 	short playMode = 0;
+	double startTime;
+	double countdownDuration = 10.0;
+	double elapsedTime, remainingTime = 10;
 	// Main while loop
 	while (!glfwWindowShouldClose(window))
 	{
@@ -401,6 +425,7 @@ int main()
 		if (ImGui::Button("Time Attack Mode")) {
 			showMenu = !showMenu;
 			playMode = 1;
+			startTime = glfwGetTime();
 		}
 
 		ImGui::Dummy(ImVec2(0.0f, 20.0f)); // Empty line of 20 units height
@@ -409,6 +434,7 @@ int main()
 		if (ImGui::Button("Survival Mode")) {
 			showMenu = !showMenu;
 			playMode = 2;
+			startTime = glfwGetTime();
 		}
 
 		ImGui::SetWindowFontScale(1.0f); // return normal font size
@@ -542,6 +568,32 @@ int main()
 			// Activate the skybox shader
 			//skyboxShader.Activate();
 			skybox.draw(camera, width, height);
+
+			ImGui_ImplOpenGL3_NewFrame();
+			ImGui_ImplGlfw_NewFrame();
+			ImGui::NewFrame();
+			ImGui::SetNextWindowPos(ImVec2(width - 420, 0));
+			ImGui::SetNextWindowSize(ImVec2(width, 40));
+			ImGui::Begin("Menu", nullptr, ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoCollapse |
+				ImGuiWindowFlags_NoResize);
+			ImGui::SetWindowFontScale(2.0f);
+			if (playMode == 1) {
+				elapsedTime = glfwGetTime() - startTime;
+				remainingTime = countdownDuration - elapsedTime;
+				ImGui::Text("Time Remaining: %.0f seconds", remainingTime);
+			}
+			else {
+				elapsedTime = glfwGetTime() - startTime;
+				ImGui::Text("Time Elapsed: %.0f seconds", elapsedTime);
+			}
+			ImGui::End();
+			ImGui::Render();
+			glClear(GL_DEPTH_BUFFER_BIT);
+			ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
+		
+			if (remainingTime <= 0 || hp == 0) {
+				gameOver(width, height);
+			}
 		}
 		// Swap the back buffer with the front buffer
 		glfwSwapBuffers(window);
