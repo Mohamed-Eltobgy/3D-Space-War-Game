@@ -1,5 +1,5 @@
-#include<filesystem>
-#include"Model.h"
+#include <filesystem>
+#include "Model.h"
 #include "imgui.h"
 #include "imgui_impl_glfw.h"
 #include "imgui_impl_opengl3.h"
@@ -13,7 +13,7 @@
 #include "BulletCollision/NarrowPhaseCollision/btGjkPairDetector.h"
 #include "BulletCollision/NarrowPhaseCollision/btPointCollector.h"
 #include "skyBox.h"
-
+#include <random>
 
 // Window dimensions
 const unsigned int width = 1400;
@@ -50,6 +50,89 @@ float randf()
 //
 //	return result.m_hasResult && result.m_distance <= 0.0f;
 //}
+
+// Vertex Shader source code
+const char* vertexShaderSource = "#version 330 core\n"
+"layout (location = 0) in vec3 aPos;\n"
+"void main()\n"
+"{\n"
+"   gl_Position = vec4(aPos.x, aPos.y, aPos.z, 1.0);\n"
+"}\0";
+//Fragment Shader source code
+const char* fragmentShaderSource = "#version 330 core\n"
+"out vec4 FragColor;\n"
+"void main()\n"
+"{\n"
+"   FragColor = vec4(0.0f, 1.0f, 0.0f, 1.0f);\n"
+"}\n\0";
+
+void menu(int width, int height) {
+	ImGui_ImplOpenGL3_NewFrame();
+	ImGui_ImplGlfw_NewFrame();
+	ImGui::NewFrame();
+	ImGui::SetNextWindowPos(ImVec2(0, 0));
+	ImGui::SetNextWindowSize(ImVec2(width, height));
+	ImGui::Begin("Menu", nullptr, ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoCollapse |
+		ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove);
+
+	ImGui::SetWindowFontScale(3.5f); // Increase font size
+	// Calculate the position for the title to be centered
+	ImVec2 titleSize = ImGui::CalcTextSize("Chicken Invaders EL-Ghalaba");
+
+
+	ImVec2 titlePosition((width - titleSize.x) * 0.5f, 20.0f); // Centered horizontally, 20 pixels from top
+
+	// Draw the title
+	ImGui::SetCursorPos(titlePosition);
+	ImGui::Text("Chicken Invaders EL-Ghalaba");
+	ImGui::Dummy(ImVec2(0.0f, 20.0f)); // Empty line of 20 units height
+	ImGui::Dummy(ImVec2(0.0f, 20.0f));
+	ImGui::Dummy(ImVec2(0.0f, 20.0f));
+
+	ImGui::SetWindowFontScale(2.0f); // adjust font size.
+	ImGui::Text("Select Game Mode");
+	ImGui::Dummy(ImVec2(0.0f, 20.0f));
+
+}
+void updateHp(float hp, GLuint& VAO, GLuint& VBO, GLuint rectProgram) {
+	// Calculate width based on HP (e.g., max width is 1.0)
+	float maxHpWidth = 0.9f;
+	float hpWidth = maxHpWidth * (hp / 100.0f); // Assuming hp is a percentage (0 to 100)
+
+	// Vertices coordinates based on hpWidth
+	GLfloat vertices[] = {
+		-0.9f, 0.85f, 0.0f,
+		-0.9f, 0.93f, 0.0f,
+		-0.9f + hpWidth, 0.85f, 0.0f,
+
+		-0.9f, 0.93f, 0.0f,
+		-0.9f + hpWidth, 0.85f, 0.0f,
+		-0.9f + hpWidth, 0.93f, 0.0f
+	};
+
+	// Bind the VAO
+	glBindVertexArray(VAO);
+
+	// Bind the VBO and update the buffer data
+	glBindBuffer(GL_ARRAY_BUFFER, VBO);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
+
+	// Configure the vertex attributes
+	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
+	glEnableVertexAttribArray(0);
+
+	// Unbind the VBO and VAO
+	glBindBuffer(GL_ARRAY_BUFFER, 0);
+	glBindVertexArray(0);
+
+	glUseProgram(rectProgram);
+	// Bind the VAO so OpenGL knows to use it
+	glBindVertexArray(VAO);
+	// Draw the triangle using the GL_TRIANGLES primitive
+	glDrawArrays(GL_TRIANGLES, 0, 6);
+	glBindVertexArray(0);
+}
+
 
 // Main function
 int main()
@@ -120,6 +203,19 @@ int main()
 	glm::vec3 spaceShipPos = camera.Position + camera.Orientation + glm::vec3(50.0,0.0,0.0);
 	glm::quat spaceShipRot = glm::rotate(glm::quat(1.0f, 0.0f, 0.0f, 0.0f), glm::radians(-90.0f), glm::vec3(0.0f, 1.0f, 0.0f));
 
+	//potion pos and rot
+	std::random_device rd;  // Obtain a random number from hardware
+	std::mt19937 gen(rd()); // Seed the generator
+
+	// Define distribution for x, y, z coordinates
+	std::uniform_real_distribution<float> dist(-1000.0f, 1000.0f);
+
+	// Generate random positions for each potion
+	glm::vec3 potionPos1(dist(gen), dist(gen), dist(gen));	glm::vec3 potionPos2(dist(gen), dist(gen), dist(gen));
+	glm::vec3 potionPos3(dist(gen), dist(gen), dist(gen));	glm::vec3 potionPos4(dist(gen), dist(gen), dist(gen));
+	glm::vec3 potionPos5(dist(gen), dist(gen), dist(gen));
+	glm::quat potionRot = glm::rotate(glm::quat(1.0f, 0.0f, 0.0f, 0.0f), glm::radians(-90.0f), glm::vec3(0.0f, 1.0f, 0.0f));
+
 	// Get the parent directory of the current directory
 	std::string parentDir = (std::filesystem::current_path().std::filesystem::path::parent_path()).string();
 	
@@ -178,13 +274,15 @@ int main()
 
 	//Model spaceShip((parentDir + spaceShipPath).c_str());
 	string path = parentDir + spaceShipPath;
-	AssimpModel spaceShip(path);
+	//AssimpModel spaceShip(path);
 
 	//potion
-	//std::string potionPath = "/Resources/models/anaaa/scene.obj";
-	//string path1 = parentDir + potionPath;
+	std::string potionPath = "/Resources/models/potion/scene.gltf";
+	string path1 = parentDir + potionPath;
 	////Model potion(path1.c_str());
-	//AssimpModel potion(path1);
+	AssimpModel potion1(path1);		AssimpModel potion2(path1);
+	AssimpModel potion3(path1);		AssimpModel potion4(path1);
+	AssimpModel potion5(path1);
 
 	//std::vector<Vertex> sunVertices;
 	//for (Mesh m : sun.meshes)
@@ -219,7 +317,7 @@ int main()
 	// Radius of circle around which asteroids orbit
 	float radius = 60.0f;
 
-	// How much ateroids deviate from the radius
+	// How much asteroids deviate from the radius
 	float radiusDeviation = 25.0f;
 
 	// Holds all transformations for the asteroids
@@ -252,6 +350,41 @@ int main()
 		scales[i] = 0.1f * glm::vec3(randf(), randf(), randf());
 	}
 
+	// Create Vertex Shader Object and get its reference
+	GLuint rectShader = glCreateShader(GL_VERTEX_SHADER);
+	// Attach Vertex Shader source to the Vertex Shader Object
+	glShaderSource(rectShader, 1, &vertexShaderSource, NULL);
+	// Compile the Vertex Shader into machine code
+	glCompileShader(rectShader);
+
+	// Create Fragment Shader Object and get its reference
+	GLuint fragmentShader = glCreateShader(GL_FRAGMENT_SHADER);
+	// Attach Fragment Shader source to the Fragment Shader Object
+	glShaderSource(fragmentShader, 1, &fragmentShaderSource, NULL);
+	// Compile the Vertex Shader into machine code
+	glCompileShader(fragmentShader);
+
+	// Create Shader Program Object and get its reference
+	GLuint rectProgram = glCreateProgram();
+	// Attach the Vertex and Fragment Shaders to the Shader Program
+	glAttachShader(rectProgram, rectShader);
+	glAttachShader(rectProgram, fragmentShader);
+	// Wrap-up/Link all the shaders together into the Shader Program
+	glLinkProgram(rectProgram);
+
+	// Delete the now useless Vertex and Fragment Shader objects
+	glDeleteShader(rectShader);
+	glDeleteShader(fragmentShader);
+
+	float hp = 50.0f; // Initial HP
+	GLuint VAO, VBO;
+
+	// Generate the VAO and VBO with only 1 object each
+	glGenVertexArrays(1, &VAO);
+	glGenBuffers(1, &VBO);
+
+	// Update HP initially
+	//updateHp(hp, VAO, VBO);
 	
 	bool showMenu = true;
 	short playMode = 0;
@@ -260,33 +393,9 @@ int main()
 	{
 		glViewport(0, 0, width, height);
 		glfwPollEvents();
-
-		ImGui_ImplOpenGL3_NewFrame();
-		ImGui_ImplGlfw_NewFrame();
-		ImGui::NewFrame();
-		ImGui::SetNextWindowPos(ImVec2(0, 0));
-		ImGui::SetNextWindowSize(ImVec2(width, height));
-		ImGui::Begin("Menu", nullptr, ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoCollapse |
-			ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove);
-
-		ImGui::SetWindowFontScale(3.5f); // Increase font size
-		// Calculate the position for the title to be centered
-		ImVec2 titleSize = ImGui::CalcTextSize("Chicken Invaders EL-Ghalaba");
 		
-
-		ImVec2 titlePosition((width - titleSize.x) * 0.5f, 20.0f); // Centered horizontally, 20 pixels from top
-
-		// Draw the title
-		ImGui::SetCursorPos(titlePosition);
-		ImGui::Text("Chicken Invaders EL-Ghalaba");
-		ImGui::Dummy(ImVec2(0.0f, 20.0f)); // Empty line of 20 units height
-		ImGui::Dummy(ImVec2(0.0f, 20.0f));
-		ImGui::Dummy(ImVec2(0.0f, 20.0f));
-
-		ImGui::SetWindowFontScale(2.0f); // adjust font size.
-		ImGui::Text("Select Game Mode");
-		ImGui::Dummy(ImVec2(0.0f, 20.0f));
-
+		menu(width, height);
+		
 		ImGui::Bullet();
 		ImGui::SameLine();
 		if (ImGui::Button("Time Attack Mode")) {
@@ -308,11 +417,42 @@ int main()
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 		ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
 
-
-		// Clean the back buffer and depth buffer
-		//glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 		if (!showMenu) {
+			// Clean the back buffer and assign the new color to it
+			glClear(GL_COLOR_BUFFER_BIT);
 			
+			updateHp(hp, VAO, VBO, rectProgram);
+
+			// Define proximity threshold
+			float proximityThreshold = 37.0f; // Adjust this as needed
+
+			// Check if spaceship is near the potion
+			if (glm::distance(camera.Position, potionPos1) < proximityThreshold) {
+				hp += 10; // Adjust this value as needed
+				if (hp > 100.0f)
+					hp = 100.0f; // Cap HP to 100
+				potionPos1 = glm::vec3(dist(gen), dist(gen), dist(gen));
+			} else if (glm::distance(camera.Position, potionPos2) < proximityThreshold) {
+				hp += 10; // Adjust this value as needed
+				if (hp > 100.0f)
+					hp = 100.0f; // Cap HP to 100
+				potionPos2 = glm::vec3(dist(gen), dist(gen), dist(gen));
+			} else if (glm::distance(camera.Position, potionPos3) < proximityThreshold) {
+				hp += 10; // Adjust this value as needed
+				if (hp > 100.0f)
+					hp = 100.0f; // Cap HP to 100
+				potionPos3 = glm::vec3(dist(gen), dist(gen), dist(gen));
+			} else if (glm::distance(camera.Position, potionPos4) < proximityThreshold) {
+				hp += 10; // Adjust this value as needed
+				if (hp > 100.0f)
+					hp = 100.0f; // Cap HP to 100
+				potionPos4 = glm::vec3(dist(gen), dist(gen), dist(gen));
+			} else if (glm::distance(camera.Position, potionPos5) < proximityThreshold) {
+				hp += 10; // Adjust this value as needed
+				if (hp > 100.0f)
+					hp = 100.0f; // Cap HP to 100
+				potionPos5 = glm::vec3(dist(gen), dist(gen), dist(gen));
+			}
 			glViewport(0, 0, width, height);
 			// Handles camera inputs
 			camera.Inputs(window);
@@ -330,7 +470,12 @@ int main()
 				p.draw(shaderProgram, camera);
 			}
 		
-			spaceShip.Draw(shaderProgram, camera, spaceShipPos, spaceShipRot, glm::vec3(4.0f));
+			//spaceShip.Draw(shaderProgram, camera, spaceShipPos, spaceShipRot, glm::vec3(4.0f));
+			potion1.Draw(shaderProgram, camera, potionPos1, potionRot, glm::vec3(18.0f));
+			potion2.Draw(shaderProgram, camera, potionPos2, potionRot, glm::vec3(18.0f));
+			potion3.Draw(shaderProgram, camera, potionPos3, potionRot, glm::vec3(18.0f));
+			potion4.Draw(shaderProgram, camera, potionPos4, potionRot, glm::vec3(18.0f));
+			potion5.Draw(shaderProgram, camera, potionPos5, potionRot, glm::vec3(18.0f));
 			//spaceShipPos += glm::vec3(0.1f, 0.0f, 0.0f);
 			
 			// Update the sun's and planets' rotations
@@ -344,9 +489,6 @@ int main()
 				asteroid.Draw(shaderProgram, camera, translations[i], rotations[i], scales[i]);
 			}
 
-			//potion.Draw(shaderProgram, camera, spaceShipPos, spaceShipRot, glm::vec3(2.0f));
-			//potion.Draw(shaderProgram, camera, spaceShipPos, spaceShipRot, glm::vec3(2.0f));
-
 			// Update the asteroid positions to orbit the sun with saturn
 			for (unsigned int i = 0; i < number; i++)
 			{
@@ -359,9 +501,9 @@ int main()
 			//////////////////////////////////-----------------------------------------------------//////////////////////////////////
 			// Set the viewport of additional camera to the right corner
 			glClear(GL_DEPTH_BUFFER_BIT);
-			int rightViewportWidth = width / 3;
+			int rightViewportWidth = width / 3.75;
 			int rightViewportX = width - rightViewportWidth;
-			glViewport(rightViewportX, 0, rightViewportWidth, height / 3);
+			glViewport(rightViewportX, 0, rightViewportWidth, height / 3.75);
 
 			// Updates and exports the camera matrix to the Vertex Shader
 			camera2.updateMatrix(45.0f, 0.1f, 2000.0f);
@@ -375,7 +517,11 @@ int main()
 			for (Planet &p : planets) {
 				p.draw(shaderProgram, camera2);
 			}
-	
+			potion1.Draw(shaderProgram, camera2, potionPos1, potionRot, glm::vec3(18.0f));
+			potion2.Draw(shaderProgram, camera2, potionPos2, potionRot, glm::vec3(18.0f));
+			potion3.Draw(shaderProgram, camera2, potionPos3, potionRot, glm::vec3(18.0f));
+			potion4.Draw(shaderProgram, camera2, potionPos4, potionRot, glm::vec3(18.0f));
+			potion5.Draw(shaderProgram, camera2, potionPos5, potionRot, glm::vec3(18.0f));
 			// Update the sun's and planets' rotations
 			for (Planet &p : planets) {
 				p.update();
@@ -399,8 +545,6 @@ int main()
 		}
 		// Swap the back buffer with the front buffer
 		glfwSwapBuffers(window);
-		//////////////////////------------------------------------------------------------------------------/////////////////////////
-		// Take care of all GLFW events
 	}
 
 	ImGui_ImplOpenGL3_Shutdown();
@@ -409,7 +553,9 @@ int main()
 
 	// Delete all the objects
 	shaderProgram.Delete();
-
+	glDeleteVertexArrays(1, &VAO);
+	glDeleteBuffers(1, &VBO);
+	glDeleteProgram(rectProgram);
 	// Delete window
 	glfwDestroyWindow(window);
 
