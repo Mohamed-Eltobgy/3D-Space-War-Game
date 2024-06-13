@@ -1,0 +1,693 @@
+{
+  "accessors": [
+    {
+      "bufferView": 2,
+      "componentType": 5126,
+      "count": 6350,
+      "max": [
+        1330.1348876953125,
+        1330.1348876953125,
+        133.29420471191406
+      ],
+      "min": [
+        -1330.1297607421875,
+        -1330.1297607421875,
+        -4417.908203125
+      ],
+      "type": "VEC3"
+    },
+    {
+      "bufferView": 2,
+      "byteOffset": 76200,
+      "componentType": 5126,
+      "count": 6350,
+      "max": [
+        0.9999877214431763,
+        0.9999877214431763,
+        0.9998246431350708
+      ],
+      "min": [
+        -0.9999877214431763,
+        -0.9999877214431763,
+        -0.9999451637268066
+      ],
+      "type": "VEC3"
+    },
+    {
+      "bufferView": 3,
+      "componentType": 5126,
+      "count": 6350,
+      "max": [
+        0.9999998211860657,
+        0.9999992847442627,
+        0.9999810457229614,
+        1.0
+      ],
+      "min": [
+        -0.9999997615814209,
+        -0.9999998211860657,
+        -0.9999731779098511,
+        -1.0
+      ],
+      "type": "VEC4"
+    },
+    {
+      "bufferView": 1,
+      "componentType": 5126,
+      "count": 6350,
+      "max": [
+        0.9750493168830872,
+        0.9910788536071777
+      ],
+      "min": [
+        0.013825006783008575,
+        0.008620183914899826
+      ],
+      "type": "VEC2"
+    },
+    {
+      "bufferView": 1,
+      "byteOffset": 50800,
+      "componentType": 5126,
+      "count": 6350,
+      "max": [
+        0.9750493168830872,
+        0.9910788536071777
+      ],
+      "min": [
+        0.013825006783008575,
+        0.008620183914899826
+      ],
+      "type": "VEC2"
+    },
+    {
+      "bufferView": 1,
+      "byteOffset": 101600,
+      "componentType": 5126,
+      "count": 6350,
+      "max": [
+        0.9750493168830872,
+        0.9910788536071777
+      ],
+      "min": [
+        0.013825006783008575,
+        0.008620183914899826
+      ],
+      "type": "VEC2"
+    },
+    {
+      "bufferView": 0,
+      "componentType": 5125,
+      "count": 22176,
+      "type": "SCALAR"
+    },
+    {
+      "bufferView": 2,
+      "byteOffset": 152400,
+      "componentType": 5126,
+      "count": 268,
+      "max": [
+        1015.7266845703125,
+        1015.7262573242188,
+        -44.15135955810547
+      ],
+      "min": [
+        -1015.7258911132813,
+        -1015.7262573242188,
+        -1458.2152099609375
+      ],
+      "type": "VEC3"
+    },
+    {
+      "bufferView": 2,
+      "byteOffset": 155616,
+      "componentType": 5126,
+      "count": 268,
+      "max": [
+        0.9986472725868225,
+        0.9986473321914673,
+        0.99727863073349
+      ],
+      "min": [
+        -0.9974601864814758,
+        -0.9986473321914673,
+        -0.9235493540763855
+      ],
+      "type": "VEC3"
+    },
+    {
+      "bufferView": 3,
+      "byteOffset": 101600,
+      "componentType": 5126,
+      "count": 268,
+      "max": [
+        0.9886540174484253,
+        0.9886541366577148,
+        0.3930331766605377,
+        1.0
+      ],
+      "min": [
+        -0.9971169829368591,
+        -0.9969508051872253,
+        -0.9986228346824646,
+        -1.0
+      ],
+      "type": "VEC4"
+    },
+    {
+      "bufferView": 1,
+      "byteOffset": 152400,
+      "componentType": 5126,
+      "count": 268,
+      "max": [
+        0.7073460817337036,
+        0.9878122806549072
+      ],
+      "min": [
+        0.012187719345092773,
+        0.012187719345092773
+      ],
+      "type": "VEC2"
+    },
+    {
+      "bufferView": 0,
+      "byteOffset": 88704,
+      "componentType": 5125,
+      "count": 1314,
+      "type": "SCALAR"
+    },
+    {
+      "bufferView": 2,
+      "byteOffset": 158832,
+      "componentType": 5126,
+      "count": 1615,
+      "max": [
+        1099.1143798828125,
+        1099.1138916015625,
+        61.894447326660156
+      ],
+      "min": [
+        -1099.1138916015625,
+        -1099.1143798828125,
+        -4123.63037109375
+      ],
+      "type": "VEC3"
+    },
+    {
+      "bufferView": 2,
+      "byteOffset": 178212,
+      "componentType": 5126,
+      "count": 1615,
+      "max": [
+        0.99876469373703,
+        0.9987648129463196,
+        0.9969807267189026
+      ],
+      "min": [
+        -0.9987647533416748,
+        -0.99876469373703,
+        -0.9970110654830933
+      ],
+      "type": "VEC3"
+    },
+    {
+      "bufferView": 3,
+      "byteOffset": 105888,
+      "componentType": 5126,
+      "count": 1615,
+      "max": [
+        1.0,
+        1.0,
+        0.07727454602718353,
+        1.0
+      ],
+      "min": [
+        -1.0,
+        -1.0,
+        -0.07727449387311935,
+        -1.0
+      ],
+      "type": "VEC4"
+    },
+    {
+      "bufferView": 1,
+      "byteOffset": 154544,
+      "componentType": 5126,
+      "count": 1615,
+      "max": [
+        0.8270588517189026,
+        0.9868038296699524
+      ],
+      "min": [
+        0.013196080923080444,
+        0.013195991516113281
+      ],
+      "type": "VEC2"
+    },
+    {
+      "bufferView": 1,
+      "byteOffset": 167464,
+      "componentType": 5126,
+      "count": 1615,
+      "max": [
+        0.8270588517189026,
+        0.9868038296699524
+      ],
+      "min": [
+        0.013196080923080444,
+        0.013195991516113281
+      ],
+      "type": "VEC2"
+    },
+    {
+      "bufferView": 1,
+      "byteOffset": 180384,
+      "componentType": 5126,
+      "count": 1615,
+      "max": [
+        0.8270588517189026,
+        0.9868038296699524
+      ],
+      "min": [
+        0.013196080923080444,
+        0.013195991516113281
+      ],
+      "type": "VEC2"
+    },
+    {
+      "bufferView": 0,
+      "byteOffset": 93960,
+      "componentType": 5125,
+      "count": 9012,
+      "type": "SCALAR"
+    }
+  ],
+  "asset": {
+    "extras": {
+      "author": "Pixel Life (https://sketchfab.com/pixellife)",
+      "license": "CC-BY-4.0 (http://creativecommons.org/licenses/by/4.0/)",
+      "source": "https://sketchfab.com/3d-models/potion-health-elixir-game-ready-asset-84229f5d566e4ccdbd73d54f43c07bd8",
+      "title": "Potion Health Elixir (game ready asset)"
+    },
+    "generator": "Sketchfab-15.50.0",
+    "version": "2.0"
+  },
+  "bufferViews": [
+    {
+      "buffer": 0,
+      "byteLength": 130008,
+      "name": "floatBufferViews",
+      "target": 34963
+    },
+    {
+      "buffer": 0,
+      "byteLength": 193304,
+      "byteOffset": 130008,
+      "byteStride": 8,
+      "name": "floatBufferViews",
+      "target": 34962
+    },
+    {
+      "buffer": 0,
+      "byteLength": 197592,
+      "byteOffset": 323312,
+      "byteStride": 12,
+      "name": "floatBufferViews",
+      "target": 34962
+    },
+    {
+      "buffer": 0,
+      "byteLength": 131728,
+      "byteOffset": 520904,
+      "byteStride": 16,
+      "name": "floatBufferViews",
+      "target": 34962
+    }
+  ],
+  "buffers": [
+    {
+      "byteLength": 652632,
+      "uri": "scene.bin"
+    }
+  ],
+  "extensionsUsed": [
+    "KHR_materials_emissive_strength"
+  ],
+  "images": [
+    {
+      "uri": "textures/Elixir1_baseColor.jpeg"
+    },
+    {
+      "uri": "textures/Elixir1_metallicRoughness.png"
+    },
+    {
+      "uri": "textures/Elixir1_normal.jpeg"
+    },
+    {
+      "uri": "textures/FillElixir1_baseColor.jpeg"
+    },
+    {
+      "uri": "textures/FillElixir1_metallicRoughness.png"
+    },
+    {
+      "uri": "textures/FillElixir1_emissive.jpeg"
+    },
+    {
+      "uri": "textures/FillElixir1_normal.jpeg"
+    },
+    {
+      "uri": "textures/GlassElixir1_baseColor.png"
+    },
+    {
+      "uri": "textures/GlassElixir1_metallicRoughness.png"
+    },
+    {
+      "uri": "textures/GlassElixir1_normal.jpeg"
+    }
+  ],
+  "materials": [
+    {
+      "doubleSided": true,
+      "name": "Elixir1",
+      "normalTexture": {
+        "index": 2
+      },
+      "occlusionTexture": {
+        "index": 1
+      },
+      "pbrMetallicRoughness": {
+        "baseColorTexture": {
+          "index": 0
+        },
+        "metallicRoughnessTexture": {
+          "index": 1
+        }
+      }
+    },
+    {
+      "doubleSided": true,
+      "emissiveFactor": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "emissiveTexture": {
+        "index": 5
+      },
+      "extensions": {
+        "KHR_materials_emissive_strength": {
+          "emissiveStrength": 2.0
+        }
+      },
+      "name": "FillElixir1",
+      "normalTexture": {
+        "index": 6
+      },
+      "occlusionTexture": {
+        "index": 4
+      },
+      "pbrMetallicRoughness": {
+        "baseColorTexture": {
+          "index": 3
+        },
+        "metallicRoughnessTexture": {
+          "index": 4
+        }
+      }
+    },
+    {
+      "alphaMode": "BLEND",
+      "doubleSided": true,
+      "name": "GlassElixir1",
+      "normalTexture": {
+        "index": 9
+      },
+      "occlusionTexture": {
+        "index": 8
+      },
+      "pbrMetallicRoughness": {
+        "baseColorTexture": {
+          "index": 7
+        },
+        "metallicRoughnessTexture": {
+          "index": 8
+        }
+      }
+    }
+  ],
+  "meshes": [
+    {
+      "name": "Potion_Elixir1_0",
+      "primitives": [
+        {
+          "attributes": {
+            "NORMAL": 1,
+            "POSITION": 0,
+            "TANGENT": 2,
+            "TEXCOORD_0": 3,
+            "TEXCOORD_1": 4,
+            "TEXCOORD_2": 5
+          },
+          "indices": 6,
+          "material": 0,
+          "mode": 4
+        }
+      ]
+    },
+    {
+      "name": "Fill_FillElixir1_0",
+      "primitives": [
+        {
+          "attributes": {
+            "NORMAL": 8,
+            "POSITION": 7,
+            "TANGENT": 9,
+            "TEXCOORD_0": 10
+          },
+          "indices": 11,
+          "material": 1,
+          "mode": 4
+        }
+      ]
+    },
+    {
+      "name": "Glass_GlassElixir1_0",
+      "primitives": [
+        {
+          "attributes": {
+            "NORMAL": 13,
+            "POSITION": 12,
+            "TANGENT": 14,
+            "TEXCOORD_0": 15,
+            "TEXCOORD_1": 16,
+            "TEXCOORD_2": 17
+          },
+          "indices": 18,
+          "material": 2,
+          "mode": 4
+        }
+      ]
+    }
+  ],
+  "nodes": [
+    {
+      "children": [
+        1
+      ],
+      "matrix": [
+        1.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        2.220446049250313e-16,
+        -1.0,
+        0.0,
+        0.0,
+        1.0,
+        2.220446049250313e-16,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ],
+      "name": "Sketchfab_model"
+    },
+    {
+      "children": [
+        2
+      ],
+      "matrix": [
+        0.009999999776482582,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.009999999776482582,
+        0.0,
+        0.0,
+        -0.009999999776482582,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ],
+      "name": "81115660f1ec43eaab10d5b89928e5c1.fbx"
+    },
+    {
+      "children": [
+        3,
+        5,
+        7
+      ],
+      "name": "RootNode"
+    },
+    {
+      "children": [
+        4
+      ],
+      "matrix": [
+        0.009999999776482582,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        -2.8212996285856105e-09,
+        0.009999999776482185,
+        0.0,
+        0.0,
+        -0.009999999776482185,
+        -2.8212996285856105e-09,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ],
+      "name": "Potion"
+    },
+    {
+      "mesh": 0,
+      "name": "Potion_Elixir1_0"
+    },
+    {
+      "children": [
+        6
+      ],
+      "matrix": [
+        0.009999999776482582,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        -2.8212996285856105e-09,
+        0.009999999776482185,
+        0.0,
+        0.0,
+        -0.009999999776482185,
+        -2.8212996285856105e-09,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ],
+      "name": "Fill"
+    },
+    {
+      "mesh": 1,
+      "name": "Fill_FillElixir1_0"
+    },
+    {
+      "children": [
+        8
+      ],
+      "matrix": [
+        0.009999999776482582,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        -2.8212996285856105e-09,
+        0.009999999776482185,
+        0.0,
+        0.0,
+        -0.009999999776482185,
+        -2.8212996285856105e-09,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ],
+      "name": "Glass"
+    },
+    {
+      "mesh": 2,
+      "name": "Glass_GlassElixir1_0"
+    }
+  ],
+  "samplers": [
+    {
+      "magFilter": 9729,
+      "minFilter": 9987,
+      "wrapS": 10497,
+      "wrapT": 10497
+    }
+  ],
+  "scene": 0,
+  "scenes": [
+    {
+      "name": "Sketchfab_Scene",
+      "nodes": [
+        0
+      ]
+    }
+  ],
+  "textures": [
+    {
+      "sampler": 0,
+      "source": 0
+    },
+    {
+      "sampler": 0,
+      "source": 1
+    },
+    {
+      "sampler": 0,
+      "source": 2
+    },
+    {
+      "sampler": 0,
+      "source": 3
+    },
+    {
+      "sampler": 0,
+      "source": 4
+    },
+    {
+      "sampler": 0,
+      "source": 5
+    },
+    {
+      "sampler": 0,
+      "source": 6
+    },
+    {
+      "sampler": 0,
+      "source": 7
+    },
+    {
+      "sampler": 0,
+      "source": 8
+    },
+    {
+      "sampler": 0,
+      "source": 9
+    }
+  ]
+}

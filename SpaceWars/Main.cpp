@@ -172,13 +172,19 @@ int main()
 	Model asteroid((parentDir + asteroidPath).c_str());
 
 	//std::string spaceShipPath = "/Resources/models/spaceship/spaceship.gltf";
-	//std::string spaceShipPath = "/Resources/models/spaceship/neghvar.obj";
-	std::string spaceShipPath = "/Resources/models/spaceship1/voyager.obj";
+	std::string spaceShipPath = "/Resources/models/spaceship/neghvar.obj";
+	//std::string spaceShipPath = "/Resources/models/spaceship1/voyager.obj";
 	//std::string spaceShipPath = "/Resources/models/backpack/backpack.obj";
 
 	//Model spaceShip((parentDir + spaceShipPath).c_str());
 	string path = parentDir + spaceShipPath;
 	AssimpModel spaceShip(path);
+
+	//potion
+	//std::string potionPath = "/Resources/models/anaaa/scene.obj";
+	//string path1 = parentDir + potionPath;
+	////Model potion(path1.c_str());
+	//AssimpModel potion(path1);
 
 	//std::vector<Vertex> sunVertices;
 	//for (Mesh m : sun.meshes)
@@ -306,7 +312,8 @@ int main()
 		// Clean the back buffer and depth buffer
 		//glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 		if (!showMenu) {
-
+			
+			glViewport(0, 0, width, height);
 			// Handles camera inputs
 			camera.Inputs(window);
 
@@ -337,6 +344,9 @@ int main()
 				asteroid.Draw(shaderProgram, camera, translations[i], rotations[i], scales[i]);
 			}
 
+			//potion.Draw(shaderProgram, camera, spaceShipPos, spaceShipRot, glm::vec3(2.0f));
+			//potion.Draw(shaderProgram, camera, spaceShipPos, spaceShipRot, glm::vec3(2.0f));
+
 			// Update the asteroid positions to orbit the sun with saturn
 			for (unsigned int i = 0; i < number; i++)
 			{
@@ -347,8 +357,8 @@ int main()
 			skybox.draw(camera, width, height);
 
 			//////////////////////////////////-----------------------------------------------------//////////////////////////////////
-			glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 			// Set the viewport of additional camera to the right corner
+			glClear(GL_DEPTH_BUFFER_BIT);
 			int rightViewportWidth = width / 3;
 			int rightViewportX = width - rightViewportWidth;
 			glViewport(rightViewportX, 0, rightViewportWidth, height / 3);
@@ -363,7 +373,7 @@ int main()
 
 			// Draw the planets around the sun
 			for (Planet &p : planets) {
-				p.draw(shaderProgram, camera);
+				p.draw(shaderProgram, camera2);
 			}
 	
 			// Update the sun's and planets' rotations

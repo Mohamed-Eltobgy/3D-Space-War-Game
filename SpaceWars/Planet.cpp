@@ -10,9 +10,7 @@ Planet::Planet(const char* file, glm::vec3 planetPosition, glm::quat planetRotat
 
 void Planet::update()
 {
-	std::cout << "bef " << planetPos.x << " " << planetPos.y << " " << planetPos.z << std::endl;
 	planetPos = glm::vec3(planetPos.x * cos(movementSpeed) - planetPos.z * sin(-1.0f*movementSpeed),0.0f,planetPos.x * sin(-1.0f * movementSpeed) + planetPos.z * cos(movementSpeed));
-	std::cout << "aft " << planetPos.x << " " << planetPos.y << " " << planetPos.z << std::endl;
 	planetRot = glm::rotate(planetRot, glm::radians(rotationSpeed), glm::vec3(0.0f, 1.0f, 0.0f));
 }
 
