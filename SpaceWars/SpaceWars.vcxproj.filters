@@ -96,6 +96,9 @@
     <ClCompile Include="SoundSource.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="spaceShip.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="EBO.h">
@@ -165,6 +168,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="SoundSource.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="spaceShip.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

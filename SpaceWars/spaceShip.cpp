@@ -97,8 +97,8 @@ void SpaceShip::update(GLFWwindow* window,Camera &camera) {
 		speed = 1.5f;
 	}
 	
-	/*camera.Orientation = orientation + glm::vec3(0.0f, -0.5f, 0.0f);
-	camera.Position = position - orientation * 70.0f + glm::vec3(0.0f, 30.0f, 0.0f);*/
+	camera.Orientation = orientation + glm::vec3(0.0f, -0.5f, 0.0f);
+	camera.Position = position - orientation * 70.0f + glm::vec3(0.0f, 30.0f, 0.0f);
 }
 
 void SpaceShip::draw(Shader shaderProgram, Camera camera) {
