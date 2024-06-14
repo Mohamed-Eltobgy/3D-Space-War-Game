@@ -363,224 +363,237 @@ int main()
 	double elapsedTime, remainingTime = 10;
 	float lastCollisionTime = 0.0f;
 
-	 
+	const double targetFPS = 60.0;
+	const double frameTime = 1.0 / targetFPS;
+	double lastFrameTime = glfwGetTime();
+	double deltaTime = 0.0;
+
 	// Main while loop
 	while (!glfwWindowShouldClose(window))
 	{
-		// Clear the screen
-		glViewport(0, 0, width, height);
-		glfwPollEvents();
-
-		menu(width, height);
-
-		ImGui::Bullet();
-		ImGui::SameLine();
-		if (ImGui::Button("Time Attack Mode"))
+		double currentFrameTime = glfwGetTime();
+		deltaTime += (currentFrameTime - lastFrameTime);
+		lastFrameTime = currentFrameTime;
+          
+		// to control 60 frame per second
+		if (deltaTime >= frameTime)
 		{
-			// Stop the main menu sound
-			speaker.Stop();
-			showMenu = !showMenu;
-			playMode = 1;
-			startTime = glfwGetTime();
-		}
-
-		ImGui::Dummy(ImVec2(0.0f, 20.0f)); // Empty line of 20 units height
-		ImGui::Bullet();
-		ImGui::SameLine();
-		if (ImGui::Button("Survival Mode"))
-		{
-			speaker.Stop();
-			showMenu = !showMenu;
-			playMode = 2;
-			startTime = glfwGetTime();
-		}
-
-		ImGui::SetWindowFontScale(1.0f); // return normal font size
-		ImGui::End();
-		ImGui::Render();
-		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-		ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
-
-		if (!showMenu)
-		{
-			// Clean the back buffer and assign the new color to it
-			glClear(GL_COLOR_BUFFER_BIT);
-
-			updateHp(hp, VAO, VBO, hpShader.ID);
-			float currentTime = glfwGetTime();
-			// Define proximity threshold
-			float proximityThreshold = 37.0f; // Adjust this as needed
-
-			// Check if spaceship is near the potion
-			for (AssimpModel& pot : potions)
-			{
-				if (glm::distance(spaceShip.position, pot.position) < proximityThreshold)
-				{
-					speaker.Play(healSound);
-					hp += 10; // Subject to change
-					if (hp > 100.0f)
-						hp = 100.0f; // Cap HP to 100
-					pot.position = glm::vec3(dist(gen), dist(gen), dist(gen));
-				}
-			}
-			
+			deltaTime = 0.0;
+			// Clear the screen
 			glViewport(0, 0, width, height);
-			// Handles camera inputs
-			// camera.Inputs(window);
+			glfwPollEvents();
 
-			// Adjust lightings for the planets
-			shaderProgram.Activate();
-			glUniform4f(glGetUniformLocation(shaderProgram.ID, "lightColor"), lightColor.x, lightColor.y, lightColor.z, lightColor.w);
-			glUniform3f(glGetUniformLocation(shaderProgram.ID, "lightPos"), lightPos.x, lightPos.y, lightPos.z);
+			menu(width, height);
 
-			// Draw the planets around the sun
-			for (Planet &p : planets)
+			ImGui::Bullet();
+			ImGui::SameLine();
+			if (ImGui::Button("Time Attack Mode"))
 			{
-				p.draw(shaderProgram, camera);
-			}
-			// spaceShip.Draw(shaderProgram, camera, spaceShipPos, spaceShipRot, glm::vec3(4.0f));
-
-			for (AssimpModel& pot : potions)
-			{
-				pot.Draw(shaderProgram, camera, pot.position, potionRot, glm::vec3(18.0f));
+				// Stop the main menu sound
+				speaker.Stop();
+				showMenu = !showMenu;
+				playMode = 1;
+				startTime = glfwGetTime();
 			}
 
-			// update spaceship position and rotation
-			spaceShip.update(window, camera);
-			// Updates and exports the camera matrix to the Vertex Shader
-			camera.updateMatrix(45.0f, 0.1f, 2000.0f);
-			// draw the space ship
-			spaceShip.draw(shaderProgram, camera);
-
-			// spaceShip.Draw(shaderProgram, camera, spaceShipPos, spaceShipRot, glm::vec3(4.0f));
-			// spaceShipPos += glm::vec3(0.1f, 0.0f, 0.0f);
-
-			// Update the sun's and planets' rotations
-			for (Planet &p : planets)
+			ImGui::Dummy(ImVec2(0.0f, 20.0f)); // Empty line of 20 units height
+			ImGui::Bullet();
+			ImGui::SameLine();
+			if (ImGui::Button("Survival Mode"))
 			{
-				p.update();
+				speaker.Stop();
+				showMenu = !showMenu;
+				playMode = 2;
+				startTime = glfwGetTime();
 			}
 
-			// Draw the asteroids around saturn only and update their postion
-			for (unsigned int i = 0; i < number; i++)
-			{
-				asteroid.Draw(shaderProgram, camera, translations[i], rotations[i], scales[i]);
-				translations[i] = glm::vec3(translations[i].x * cos(0.0005f) - translations[i].z * sin(-0.0005f), translations[i].y, translations[i].x * sin(-0.0005f) + translations[i].z * cos(0.0005f));
-			}
-
-			for (int i = 0; i < planets.size(); i++)
-			{
-				float distanceToPlanet = glm::distance(spaceShip.position, planets[i].planetPos);
-				float pr;
-				switch (i)
-				{
-				case 0: // sun
-					pr = 93;	break;
-				case 1: // mercury
-					pr = 23;	break;
-				case 2: // venus
-					pr = 38;	break;
-				case 3: // earth
-					pr = 33;	break;
-				case 4: // mars
-					pr = 33;	break;
-				case 5: // jupiter
-					pr = 53;	break;
-				case 6: // saturn
-					pr = 45;	break;
-				case 7: // uranus
-					pr = 43;	break;
-				case 8: // neptune
-					pr = 43;
-				}
-
-				// Ensure the camera doesn't penetrate the planet
-				if (distanceToPlanet < pr)
-				{
-					glm::vec3 directionToPlanet = glm::normalize(spaceShip.position - planets[i].planetPos);
-					spaceShip.position = planets[i].planetPos + directionToPlanet * pr;
-					if (currentTime - lastCollisionTime >= 1)
-					{
-						hp -= 10;
-						lastCollisionTime = currentTime;
-						speaker.Play(crashSound);
-						smoke1.Draw(shaderProgram, camera, spaceShip.position, glm::quat(glm::radians(glm::vec3(0.0f))), glm::vec3(2.0f));
-
-					}
-				}
-			}
-
-			// Draw the skyBox
-			skybox.draw(camera, width, height);
-
-			//////////////////////////////////-----------------Second view port-------------------//////////////////////////////////
-			// Set the viewport of additional camera to the lower right corner
-			glClear(GL_DEPTH_BUFFER_BIT);
-			int rightViewportWidth = width / 3.75;
-			int rightViewportX = width - rightViewportWidth;
-			glViewport(rightViewportX, 0, rightViewportWidth, height / 3.75);
-
-			// Updates and exports the camera matrix to the Vertex Shader
-			camera2.updateMatrix(45.0f, 0.1f, 2000.0f);
-
-			// Adjust lightings for the planets
-			shaderProgram.Activate();
-			glUniform4f(glGetUniformLocation(shaderProgram.ID, "lightColor"), lightColor.x, lightColor.y, lightColor.z, lightColor.w);
-			glUniform3f(glGetUniformLocation(shaderProgram.ID, "lightPos"), lightPos.x, lightPos.y, lightPos.z);
-
-			// Draw the planets around the sun and update rotations
-			for (Planet &p : planets)
-			{
-				p.draw(shaderProgram, camera2);
-				p.update();
-			}
-			spaceShip.draw(shaderProgram, camera2);
-
-			for (AssimpModel& pot : potions)
-			{
-				pot.Draw(shaderProgram, camera2, pot.position, potionRot, glm::vec3(18.0f));
-			}
-
-			// Draw the asteroids around saturn only and update their postion
-			for (unsigned int i = 0; i < number; i++)
-			{
-				asteroid.Draw(shaderProgram, camera2, translations[i], rotations[i], scales[i]);
-				translations[i] = glm::vec3(translations[i].x * cos(0.0005f) - translations[i].z * sin(-0.0005f), translations[i].y, translations[i].x * sin(-0.0005f) + translations[i].z * cos(0.0005f));
-			}
-
-			skybox.draw(camera2, width, height);
-
-			ImGui_ImplOpenGL3_NewFrame();
-			ImGui_ImplGlfw_NewFrame();
-			ImGui::NewFrame();
-			ImGui::SetNextWindowPos(ImVec2(width - 420, 0));
-			ImGui::SetNextWindowSize(ImVec2(width, 40));
-			ImGui::Begin("Time", nullptr, ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoResize);
-			ImGui::SetWindowFontScale(2.0f);
-			if (playMode == 1)
-			{
-				elapsedTime = glfwGetTime() - startTime;
-				remainingTime = countdownDuration - elapsedTime;
-				ImGui::Text("Time Remaining: %.0f seconds", remainingTime);
-			}
-			else
-			{
-				elapsedTime = glfwGetTime() - startTime;
-				ImGui::Text("Time Elapsed: %.0f seconds", elapsedTime);
-			}
+			ImGui::SetWindowFontScale(1.0f); // return normal font size
 			ImGui::End();
 			ImGui::Render();
-			glClear(GL_DEPTH_BUFFER_BIT);
+			glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 			ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
 
-			if (remainingTime <= 0 || hp <= 0)
+			if (!showMenu)
 			{
-				gameOver(width, height);
-				//speaker.Stop();
+				// Clean the back buffer and assign the new color to it
+				glClear(GL_COLOR_BUFFER_BIT);
+
+				updateHp(hp, VAO, VBO, hpShader.ID);
+				float currentTime = glfwGetTime();
+				// Define proximity threshold
+				float proximityThreshold = 37.0f; // Adjust this as needed
+
+				// Check if spaceship is near the potion
+				for (AssimpModel& pot : potions)
+				{
+					if (glm::distance(spaceShip.position, pot.position) < proximityThreshold)
+					{
+						speaker.Play(healSound);
+						hp += 10; // Subject to change
+						if (hp > 100.0f)
+							hp = 100.0f; // Cap HP to 100
+						pot.position = glm::vec3(dist(gen), dist(gen), dist(gen));
+					}
+				}
+
+				glViewport(0, 0, width, height);
+				// Handles camera inputs
+				// camera.Inputs(window);
+
+				// Adjust lightings for the planets
+				shaderProgram.Activate();
+				glUniform4f(glGetUniformLocation(shaderProgram.ID, "lightColor"), lightColor.x, lightColor.y, lightColor.z, lightColor.w);
+				glUniform3f(glGetUniformLocation(shaderProgram.ID, "lightPos"), lightPos.x, lightPos.y, lightPos.z);
+
+				// Draw the planets around the sun
+				for (Planet& p : planets)
+				{
+					p.draw(shaderProgram, camera);
+				}
+				// spaceShip.Draw(shaderProgram, camera, spaceShipPos, spaceShipRot, glm::vec3(4.0f));
+
+				for (AssimpModel& pot : potions)
+				{
+					pot.Draw(shaderProgram, camera, pot.position, potionRot, glm::vec3(18.0f));
+				}
+
+				// update spaceship position and rotation
+				spaceShip.update(window, camera);
+				// Updates and exports the camera matrix to the Vertex Shader
+				camera.updateMatrix(45.0f, 0.1f, 2000.0f);
+				// draw the space ship
+				spaceShip.draw(shaderProgram, camera);
+
+				// spaceShip.Draw(shaderProgram, camera, spaceShipPos, spaceShipRot, glm::vec3(4.0f));
+				// spaceShipPos += glm::vec3(0.1f, 0.0f, 0.0f);
+
+				// Update the sun's and planets' rotations
+				for (Planet& p : planets)
+				{
+					p.update();
+				}
+
+				// Draw the asteroids around saturn only and update their postion
+				for (unsigned int i = 0; i < number; i++)
+				{
+					asteroid.Draw(shaderProgram, camera, translations[i], rotations[i], scales[i]);
+					translations[i] = glm::vec3(translations[i].x * cos(0.0005f) - translations[i].z * sin(-0.0005f), translations[i].y, translations[i].x * sin(-0.0005f) + translations[i].z * cos(0.0005f));
+				}
+
+				for (int i = 0; i < planets.size(); i++)
+				{
+					float distanceToPlanet = glm::distance(spaceShip.position, planets[i].planetPos);
+					float pr;
+					switch (i)
+					{
+					case 0: // sun
+						pr = 93;	break;
+					case 1: // mercury
+						pr = 23;	break;
+					case 2: // venus
+						pr = 38;	break;
+					case 3: // earth
+						pr = 33;	break;
+					case 4: // mars
+						pr = 33;	break;
+					case 5: // jupiter
+						pr = 53;	break;
+					case 6: // saturn
+						pr = 45;	break;
+					case 7: // uranus
+						pr = 43;	break;
+					case 8: // neptune
+						pr = 43;
+					}
+
+					// Ensure the camera doesn't penetrate the planet
+					if (distanceToPlanet < pr)
+					{
+						glm::vec3 directionToPlanet = glm::normalize(spaceShip.position - planets[i].planetPos);
+						spaceShip.position = planets[i].planetPos + directionToPlanet * pr;
+						if (currentTime - lastCollisionTime >= 1)
+						{
+							hp -= 10;
+							lastCollisionTime = currentTime;
+							speaker.Play(crashSound);
+							smoke1.Draw(shaderProgram, camera, spaceShip.position, glm::quat(glm::radians(glm::vec3(0.0f))), glm::vec3(2.0f));
+
+						}
+					}
+				}
+
+				// Draw the skyBox
+				skybox.draw(camera, width, height);
+
+				//////////////////////////////////-----------------Second view port-------------------//////////////////////////////////
+				// Set the viewport of additional camera to the lower right corner
+				glClear(GL_DEPTH_BUFFER_BIT);
+				int rightViewportWidth = width / 3.75;
+				int rightViewportX = width - rightViewportWidth;
+				glViewport(rightViewportX, 0, rightViewportWidth, height / 3.75);
+
+				// Updates and exports the camera matrix to the Vertex Shader
+				camera2.updateMatrix(45.0f, 0.1f, 2000.0f);
+
+				// Adjust lightings for the planets
+				shaderProgram.Activate();
+				glUniform4f(glGetUniformLocation(shaderProgram.ID, "lightColor"), lightColor.x, lightColor.y, lightColor.z, lightColor.w);
+				glUniform3f(glGetUniformLocation(shaderProgram.ID, "lightPos"), lightPos.x, lightPos.y, lightPos.z);
+
+				// Draw the planets around the sun and update rotations
+				for (Planet& p : planets)
+				{
+					p.draw(shaderProgram, camera2);
+					p.update();
+				}
+				spaceShip.draw(shaderProgram, camera2);
+
+				for (AssimpModel& pot : potions)
+				{
+					pot.Draw(shaderProgram, camera2, pot.position, potionRot, glm::vec3(18.0f));
+				}
+
+				// Draw the asteroids around saturn only and update their postion
+				for (unsigned int i = 0; i < number; i++)
+				{
+					asteroid.Draw(shaderProgram, camera2, translations[i], rotations[i], scales[i]);
+					translations[i] = glm::vec3(translations[i].x * cos(0.0005f) - translations[i].z * sin(-0.0005f), translations[i].y, translations[i].x * sin(-0.0005f) + translations[i].z * cos(0.0005f));
+				}
+
+				skybox.draw(camera2, width, height);
+
+				ImGui_ImplOpenGL3_NewFrame();
+				ImGui_ImplGlfw_NewFrame();
+				ImGui::NewFrame();
+				ImGui::SetNextWindowPos(ImVec2(width - 420, 0));
+				ImGui::SetNextWindowSize(ImVec2(width, 40));
+				ImGui::Begin("Time", nullptr, ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoResize);
+				ImGui::SetWindowFontScale(2.0f);
+				if (playMode == 1)
+				{
+					elapsedTime = glfwGetTime() - startTime;
+					remainingTime = countdownDuration - elapsedTime;
+					ImGui::Text("Time Remaining: %.0f seconds", remainingTime);
+				}
+				else
+				{
+					elapsedTime = glfwGetTime() - startTime;
+					ImGui::Text("Time Elapsed: %.0f seconds", elapsedTime);
+				}
+				ImGui::End();
+				ImGui::Render();
+				glClear(GL_DEPTH_BUFFER_BIT);
+				ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
+
+				if (remainingTime <= 0 || hp <= 0)
+				{
+					gameOver(width, height);
+					//speaker.Stop();
+				}
 			}
+			// Swap the back buffer with the front buffer
+			glfwSwapBuffers(window);
 		}
-		// Swap the back buffer with the front buffer
-		glfwSwapBuffers(window);
 	}
 
 	ImGui_ImplOpenGL3_Shutdown();
