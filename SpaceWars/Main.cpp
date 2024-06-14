@@ -14,6 +14,7 @@
 #include "planet.h"
 #include "ammoController.h"
 #include "flyWeightModelFactory.h"
+#include "enemy.h"
 
 // Window dimensions
 const unsigned int width = 1400;
@@ -207,9 +208,10 @@ int main()
 	// potion pos and rot
 	std::random_device rd;	// Obtain a random number from hardware
 	std::mt19937 gen(rd()); // Seed the generator
-
 	// Define distribution for x, y, z coordinates
 	std::uniform_real_distribution<float> dist(-1000.0f, 1000.0f);
+
+	std::uniform_real_distribution<float> speed(0.5f, 1.2f);
 
 	// Generate random positions for each potion
 	glm::vec3 potionPos1(dist(gen), dist(gen), dist(gen));
@@ -271,7 +273,7 @@ int main()
 	Model asteroid((parentDir + asteroidPath).c_str());
 	std::string spaceShipPath = parentDir + "/Resources/models/spaceship/neghvar.obj";
 	//std::string spaceShipPath = parentDir + "/Resources/models/spaceship1/voyager.obj";
-	//std::string spaceShipPath = parentDir + "/Resources/models/spaceship2/scene.gltf";
+	std::string enemySpaceShipPath = parentDir + "/Resources/models/spaceship2/scene.gltf";
 	//std::string spaceShipPath = parentDir + "/Resources/models/bullet/bullet.obj";
 
 	//Ammo path
@@ -305,7 +307,7 @@ int main()
 	SkyBox skybox(facesCubemap, "skybox.vert", "skybox.frag");
 
 	// The number of asteroids to be created
-	const unsigned int number = 500;
+	const unsigned int number = 200;
 
 	// Radius of circle around which asteroids orbit
 	float radius = 60.0f;
@@ -384,9 +386,10 @@ int main()
 	uint32_t healSound = SoundBuffer::get()->addSoundEffect((parentDir + "/Resources/sounds/heal.ogg").c_str());
 	uint32_t mainMenuSound = SoundBuffer::get()->addSoundEffect((parentDir + "/Resources/sounds/mainmenu.ogg").c_str());
 	uint32_t crashSound = SoundBuffer::get()->addSoundEffect((parentDir + "/Resources/sounds/shipcrash.ogg").c_str());
-	uint32_t shootingSound = SoundBuffer::get()->addSoundEffect((parentDir + "/Resources/sounds/mainmenu.ogg").c_str());
-
+	uint32_t shootingSound = SoundBuffer::get()->addSoundEffect((parentDir + "/Resources/sounds/shooting.ogg").c_str());
 	SoundSource speaker;
+
+	spaceShip.shootingSound = shootingSound;
 
 	// Play the main menu sound
 	speaker.Play(mainMenuSound);
@@ -407,7 +410,14 @@ int main()
 	// Get the FlyWeightModelFactory instance and save models in it
 	FlyWeightModelFactory* flyWeightModelFactory = FlyWeightModelFactory::getInstance();
 	flyWeightModelFactory->getModel("Ammo", ammoPath);
+	//flyWeightModelFactory->getModel("Enemy", enemySpaceShipPath);
 
+	vector<Enemy> enemyList;
+	for (int i = 0; i < 5; i++) {
+		enemyList.push_back(Enemy(enemySpaceShipPath, width, height, glm::vec3(dist(gen), dist(gen), dist(gen)), 
+													glm::vec3(3.0f), glm::vec3(speed(gen), speed(gen), speed(gen))));
+	}
+		
 	// Main while loop
 	while (!glfwWindowShouldClose(window))
 	{
@@ -518,12 +528,20 @@ int main()
 			potion5.Draw(shaderProgram, camera, potionPos5, potionRot, glm::vec3(18.0f));
 
 			// update spaceship position and rotation
-			spaceShip.update(window, camera);
+			spaceShip.update(window, camera, speaker);
 			// Updates and exports the camera matrix to the Vertex Shader
 			camera.updateMatrix(45.0f, 0.1f, 2000.0f);
 			// draw the space ship
 			spaceShip.draw(shaderProgram, camera);
 
+			//update Enemies
+			for (Enemy& enemy : enemyList) {
+				enemy.update(window,camera, spaceShip.position);
+			}
+			//draw Enemies
+			for (Enemy& enemy : enemyList) {
+				enemy.draw(shaderProgram,camera);
+			}
 			// spaceShip.Draw(shaderProgram, camera, spaceShipPos, spaceShipRot, glm::vec3(4.0f));
 			// spaceShipPos += glm::vec3(0.1f, 0.0f, 0.0f);
 

@@ -11,6 +11,7 @@
 #include "assimpModel.h"
 #include "shaderClass.h"
 #include "ammoController.h"
+#include "SoundSource.h"
 
 class SpaceShip:AssimpModel
 {
@@ -28,12 +29,17 @@ public:
 	int height;
 
 	// Adjust the speed of the camera and it's sensitivity when looking around
-	float speed = 1.5f;
+	float speed = 2.0f;
 	float rotationSpeed = 1.0f;
 	float sensitivity = 100.0f;
 
 	// Prevents the camera from jumping around when first clicking left click
 	bool firstClick = true;
+	//mouse clicks
+	bool mouse_button_held = false;
+
+	//sounds
+	uint32_t shootingSound = 0;
 
 	//Control ammo
 	AmmoController* ammoController;
@@ -42,7 +48,7 @@ public:
 	SpaceShip(string& modelPath,int width, int height, glm::vec3 position, glm::vec3 scale);
 
 	// Handles inputs
-	void update(GLFWwindow* window, Camera &camera);
+	void update(GLFWwindow* window, Camera &camera,SoundSource& speaker);
 
 	//Draw thes space ship
 	void draw(Shader shaderProgram, Camera camera);
