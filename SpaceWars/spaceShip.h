@@ -10,6 +10,7 @@
 #include<glm/gtx/vector_angle.hpp>
 #include "assimpModel.h"
 #include "shaderClass.h"
+#include "ammoController.h"
 
 class SpaceShip:AssimpModel
 {
@@ -33,6 +34,9 @@ public:
 
 	// Prevents the camera from jumping around when first clicking left click
 	bool firstClick = true;
+
+	//Control ammo
+	AmmoController* ammoController;
 
 	// SpaceShip constructor to set up initial values
 	SpaceShip(string& modelPath,int width, int height, glm::vec3 position, glm::vec3 scale);

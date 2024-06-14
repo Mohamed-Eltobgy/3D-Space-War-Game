@@ -161,6 +161,10 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="ammo.cpp" />
+    <ClCompile Include="ammoController.cpp" />
+    <ClCompile Include="flyWeightModelFactory.cpp" />
+    <ClCompile Include="flyWeightModelFactory.h" />
     <ClCompile Include="imgui\imgui.cpp" />
     <ClCompile Include="imgui\imgui_demo.cpp" />
     <ClCompile Include="imgui\imgui_draw.cpp" />
@@ -188,6 +192,8 @@
     <ClCompile Include="VBO.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="ammo.h" />
+    <ClInclude Include="ammoController.h" />
     <ClInclude Include="imgui\imconfig.h" />
     <ClInclude Include="imgui\imgui.h" />
     <ClInclude Include="imgui\imgui_impl_glfw.h" />

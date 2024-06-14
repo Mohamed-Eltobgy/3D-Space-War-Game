@@ -1,8 +1,12 @@
 #include "spaceShip.h"
+#include "ammo.h"
+#include "ammoController.h"
 
 SpaceShip::SpaceShip(string& modelPath,int width, int height, glm::vec3 position, glm::vec3 scale)
 	:AssimpModel(modelPath),width(width),height(height),position(position),scale(scale)
-{}
+{
+	ammoController = AmmoController::getInstance();
+}
 
 void SpaceShip::update(GLFWwindow* window,Camera &camera) {
 
@@ -95,6 +99,11 @@ void SpaceShip::update(GLFWwindow* window,Camera &camera) {
 	else if (glfwGetKey(window, GLFW_KEY_LEFT_SHIFT) == GLFW_RELEASE)
 	{
 		speed = 1.5f;
+	}
+
+	if (glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_RIGHT) == GLFW_PRESS)
+	{
+		ammoController->addAmmo(width,height,position,orientation);
 	}
 	
 	camera.Orientation = orientation + glm::vec3(0.0f, -0.5f, 0.0f);

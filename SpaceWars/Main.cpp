@@ -6,13 +6,14 @@
 #include "imgui_impl_opengl3.h"
 #include "Model.h"
 #include "assimpModel.h"
-#include "BulletCollision/NarrowPhaseCollision/btPointCollector.h"
 #include "SoundDevice.h"
 #include "SoundBuffer.h"
 #include "SoundSource.h"
 #include "spaceShip.h"
 #include "skyBox.h"
 #include "planet.h"
+#include "ammoController.h"
+#include "flyWeightModelFactory.h"
 
 // Window dimensions
 const unsigned int width = 1400;
@@ -268,11 +269,13 @@ int main()
 	vector<Planet> planets = {sun, mercury, venus, earth, mars, jupiter, saturn, uranus, neptune};
 
 	Model asteroid((parentDir + asteroidPath).c_str());
-
-	// std::string spaceShipPath = "/Resources/models/spaceship/spaceship.gltf";
 	std::string spaceShipPath = parentDir + "/Resources/models/spaceship/neghvar.obj";
-	// std::string spaceShipPath = "/Resources/models/spaceship1/voyager.obj";
-	// std::string spaceShipPath = "/Resources/models/backpack/backpack.obj";
+	//std::string spaceShipPath = parentDir + "/Resources/models/spaceship1/voyager.obj";
+	//std::string spaceShipPath = parentDir + "/Resources/models/spaceship2/scene.gltf";
+	//std::string spaceShipPath = parentDir + "/Resources/models/bullet/bullet.obj";
+
+	//Ammo path
+	std::string ammoPath = parentDir + "/Resources/models/bullet/bullet.obj";
 
 	// Model spaceShip((parentDir + spaceShipPath).c_str());
 	SpaceShip spaceShip(spaceShipPath, width, height, spaceShipPos, spaceShipScale);
@@ -397,6 +400,13 @@ int main()
 	float collisionTimer = 0.0f;
 	float lastCollisionTime = 0.0f;
 	bool isColliding = false;
+
+
+	// Get the AmmoController instance and use it
+	AmmoController* ammoController = AmmoController::getInstance();
+	// Get the FlyWeightModelFactory instance and save models in it
+	FlyWeightModelFactory* flyWeightModelFactory = FlyWeightModelFactory::getInstance();
+	flyWeightModelFactory->getModel("Ammo", ammoPath);
 
 	// Main while loop
 	while (!glfwWindowShouldClose(window))
@@ -583,6 +593,9 @@ int main()
 					}
 				}
 			}
+
+			ammoController->updateAmmos(window);
+			ammoController->drawAmmos(shaderProgram, camera);
 
 			// Draw the skyBox
 			skybox.draw(camera, width, height);

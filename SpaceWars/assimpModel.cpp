@@ -3,6 +3,7 @@
 // constructor, expects a filepath to a 3D model.
 AssimpModel::AssimpModel(string& path)
 {
+    cout << path << endl;
     loadModel(path);
     //for (auto mesh : meshes) {
     //    cout << mesh.vertices.size() << endl;
@@ -26,7 +27,6 @@ void AssimpModel::loadModel(string& path)
     Assimp::Importer importer;
     cout << "before" << endl;
     const aiScene* scene = importer.ReadFile(path, aiProcess_Triangulate | aiProcess_GenSmoothNormals | aiProcess_FlipUVs | aiProcess_CalcTangentSpace);
-  
     cout << "After" << endl;
     // check for errors
     if (!scene || scene->mFlags & AI_SCENE_FLAGS_INCOMPLETE || !scene->mRootNode) // if is Not Zero
