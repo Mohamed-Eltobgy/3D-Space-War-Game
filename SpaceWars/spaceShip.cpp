@@ -1,10 +1,16 @@
 #include "spaceShip.h"
+#include "ammo.h"
+#include "ammoController.h"
+#include "SoundSource.h"
+#include "SoundBuffer.h"
 
 SpaceShip::SpaceShip(string& modelPath,int width, int height, glm::vec3 position, glm::vec3 scale)
 	:AssimpModel(modelPath),width(width),height(height),position(position),scale(scale)
-{}
+{
+	ammoController = AmmoController::getInstance();
+}
 
-void SpaceShip::update(GLFWwindow* window,Camera &camera) {
+void SpaceShip::update(GLFWwindow* window,Camera &camera,SoundSource &speaker) {
 
 	// Handles key inputs
 	if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS)
@@ -90,14 +96,24 @@ void SpaceShip::update(GLFWwindow* window,Camera &camera) {
 
 	if (glfwGetKey(window, GLFW_KEY_LEFT_SHIFT) == GLFW_PRESS)
 	{
-		speed = 3.0f;
+		speed = 3.5f;
 	}
 	else if (glfwGetKey(window, GLFW_KEY_LEFT_SHIFT) == GLFW_RELEASE)
 	{
-		speed = 1.5f;
+		speed = 2.0f;
+	}
+
+	if (glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_RIGHT) == GLFW_PRESS && !mouse_button_held)
+	{
+		speaker.Play(shootingSound);
+		ammoController->addAmmo(width,height,position,orientation);
+		mouse_button_held = true;
+	}
+	else if (glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_RIGHT) == GLFW_RELEASE) {
+		mouse_button_held = false;
 	}
 	
-	camera.Orientation = orientation + glm::vec3(0.0f, -0.5f, 0.0f);
+	camera.Orientation = orientation + glm::vec3(0.0f, -0.2f, 0.0f);
 	camera.Position = position - orientation * 70.0f + glm::vec3(0.0f, 30.0f, 0.0f);
 }
 
