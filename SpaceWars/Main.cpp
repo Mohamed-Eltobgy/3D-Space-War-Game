@@ -278,6 +278,8 @@ int main()
 
 	// Define distribution for x, y, z coordinates
 	std::uniform_real_distribution<float> dist(-1000.0f, 1000.0f);
+	
+	std::uniform_real_distribution<float> speed(0.5f, 2.0f);
 
 	for (AssimpModel& pot : potions)
 	{
