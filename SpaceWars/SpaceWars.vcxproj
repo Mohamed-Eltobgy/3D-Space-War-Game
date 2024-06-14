@@ -161,13 +161,13 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="..\..\..\..\..\..\..\Downloads\imgui\imgui\imgui.cpp" />
-    <ClCompile Include="..\..\..\..\..\..\..\Downloads\imgui\imgui\imgui_demo.cpp" />
-    <ClCompile Include="..\..\..\..\..\..\..\Downloads\imgui\imgui\imgui_draw.cpp" />
-    <ClCompile Include="..\..\..\..\..\..\..\Downloads\imgui\imgui\imgui_impl_glfw.cpp" />
-    <ClCompile Include="..\..\..\..\..\..\..\Downloads\imgui\imgui\imgui_impl_opengl3.cpp" />
-    <ClCompile Include="..\..\..\..\..\..\..\Downloads\imgui\imgui\imgui_tables.cpp" />
-    <ClCompile Include="..\..\..\..\..\..\..\Downloads\imgui\imgui\imgui_widgets.cpp" />
+    <ClCompile Include="imgui\imgui.cpp" />
+    <ClCompile Include="imgui\imgui_demo.cpp" />
+    <ClCompile Include="imgui\imgui_draw.cpp" />
+    <ClCompile Include="imgui\imgui_impl_glfw.cpp" />
+    <ClCompile Include="imgui\imgui_impl_opengl3.cpp" />
+    <ClCompile Include="imgui\imgui_tables.cpp" />
+    <ClCompile Include="imgui\imgui_widgets.cpp" />
     <ClCompile Include="assimpModel.cpp" />
     <ClCompile Include="Camera.cpp" />
     <ClCompile Include="EBO.cpp" />
@@ -178,21 +178,25 @@
     <ClCompile Include="Planet.cpp" />
     <ClCompile Include="shaderClass.cpp" />
     <ClCompile Include="skyBox.cpp" />
+    <ClCompile Include="SoundBuffer.cpp" />
+    <ClCompile Include="SoundDevice.cpp" />
+    <ClCompile Include="SoundSource.cpp" />
+    <ClCompile Include="spaceShip.cpp" />
     <ClCompile Include="stb.cpp" />
     <ClCompile Include="Texture.cpp" />
     <ClCompile Include="VAO.cpp" />
     <ClCompile Include="VBO.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\..\..\..\..\..\..\Downloads\imgui\imgui\imconfig.h" />
-    <ClInclude Include="..\..\..\..\..\..\..\Downloads\imgui\imgui\imgui.h" />
-    <ClInclude Include="..\..\..\..\..\..\..\Downloads\imgui\imgui\imgui_impl_glfw.h" />
-    <ClInclude Include="..\..\..\..\..\..\..\Downloads\imgui\imgui\imgui_impl_opengl3.h" />
-    <ClInclude Include="..\..\..\..\..\..\..\Downloads\imgui\imgui\imgui_impl_opengl3_loader.h" />
-    <ClInclude Include="..\..\..\..\..\..\..\Downloads\imgui\imgui\imgui_internal.h" />
-    <ClInclude Include="..\..\..\..\..\..\..\Downloads\imgui\imgui\imstb_rectpack.h" />
-    <ClInclude Include="..\..\..\..\..\..\..\Downloads\imgui\imgui\imstb_textedit.h" />
-    <ClInclude Include="..\..\..\..\..\..\..\Downloads\imgui\imgui\imstb_truetype.h" />
+    <ClInclude Include="imgui\imconfig.h" />
+    <ClInclude Include="imgui\imgui.h" />
+    <ClInclude Include="imgui\imgui_impl_glfw.h" />
+    <ClInclude Include="imgui\imgui_impl_opengl3.h" />
+    <ClInclude Include="imgui\imgui_impl_opengl3_loader.h" />
+    <ClInclude Include="imgui\imgui_internal.h" />
+    <ClInclude Include="imgui\imstb_rectpack.h" />
+    <ClInclude Include="imgui\imstb_textedit.h" />
+    <ClInclude Include="imgui\imstb_truetype.h" />
     <ClInclude Include="assimpModel.h" />
     <ClInclude Include="Camera.h" />
     <ClInclude Include="EBO.h" />
@@ -201,6 +205,10 @@
     <ClInclude Include="Planet.h" />
     <ClInclude Include="shaderClass.h" />
     <ClInclude Include="skyBox.h" />
+    <ClInclude Include="SoundBuffer.h" />
+    <ClInclude Include="SoundDevice.h" />
+    <ClInclude Include="SoundSource.h" />
+    <ClInclude Include="spaceShip.h" />
     <ClInclude Include="Texture.h" />
     <ClInclude Include="VAO.h" />
     <ClInclude Include="VBO.h" />
