@@ -201,6 +201,7 @@ int main()
 	std::string asteroidPath = "/Resources/models/asteroid/scene.gltf";
 	std::string uranusPath = "/Resources/models/uranus/scene.gltf";
 	std::string neptunePath = "/Resources/models/neptune/scene.gltf";
+	
 
 	// Planets' initial positions
 	glm::vec3 mercuryPos = glm::vec3(0.0f, 0.0f, 150.0f);
@@ -246,6 +247,11 @@ int main()
 	// Model spaceShip((parentDir + spaceShipPath).c_str());
 	SpaceShip spaceShip(spaceShipPath, width, height, spaceShipPos, spaceShipScale);
 	// AssimpModel spaceShip(spaceShipPath);
+
+	//smoke
+	std::string smokePath = "/Resources/smoke/smoke.obj";
+	string path2 = parentDir + smokePath;
+	AssimpModel smoke1(path2);
 
 	// potion
 	std::string potionPath = "/Resources/models/potion/scene.gltf";
@@ -357,6 +363,7 @@ int main()
 	double elapsedTime, remainingTime = 10;
 	float lastCollisionTime = 0.0f;
 
+	 
 	// Main while loop
 	while (!glfwWindowShouldClose(window))
 	{
@@ -497,6 +504,8 @@ int main()
 						hp -= 10;
 						lastCollisionTime = currentTime;
 						speaker.Play(crashSound);
+						smoke1.Draw(shaderProgram, camera, spaceShip.position, glm::quat(glm::radians(glm::vec3(0.0f))), glm::vec3(2.0f));
+
 					}
 				}
 			}
