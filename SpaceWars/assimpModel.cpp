@@ -1,7 +1,8 @@
 #include "assimpModel.h"
 
 // constructor, expects a filepath to a 3D model.
-AssimpModel::AssimpModel(string& path)
+AssimpModel::AssimpModel(string& path) 
+    : position(glm::vec3(0.0f, 0.0f, 0.0f)) // Initialize position to (0,0,0)(string& path)
 {
     loadModel(path);
     //for (auto mesh : meshes) {
@@ -12,13 +13,17 @@ AssimpModel::AssimpModel(string& path)
 
 void AssimpModel::Draw(Shader& shader, Camera& camera, glm::vec3 translation, glm::quat rotation, glm::vec3 scale)
 {
+    position = translation;
     // Go over all meshes and draw each one
     for (unsigned int i = 0; i < meshes.size(); i++)
     {
-        meshes[i].Mesh::Draw(shader, camera, translation, rotation, scale);
+        meshes[i].Mesh::Draw(shader, camera, position, rotation, scale);
     }
 }
-
+void AssimpModel::setPosition(const glm::vec3& newPosition)
+{
+    position = newPosition;
+}
 // loads a model with supported ASSIMP extensions from file and stores the resulting meshes in the meshes vector.
 void AssimpModel::loadModel(string& path)
 {
@@ -167,4 +172,3 @@ vector<Texture> AssimpModel::loadMaterialTextures(aiMaterial* mat, aiTextureType
  
     return textures;
 }
-

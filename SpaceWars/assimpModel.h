@@ -26,11 +26,12 @@ public:
     vector<Mesh>    meshes;
     string directory;
     bool gammaCorrection;
+    glm::vec3 position;
 
     // constructor, expects a filepath to a 3D model.
     AssimpModel(string& path);
     void Draw(Shader& shader, Camera& camera, glm::vec3 translation, glm::quat rotation, glm::vec3 scale);
-
+    void setPosition(const glm::vec3& newPosition);
 private:
     // loads a model with supported ASSIMP extensions from file and stores the resulting meshes in the meshes vector.
     void loadModel(string& path);

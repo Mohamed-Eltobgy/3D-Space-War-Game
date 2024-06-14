@@ -6,7 +6,6 @@
 #include "imgui_impl_opengl3.h"
 #include "Model.h"
 #include "assimpModel.h"
-#include "BulletCollision/NarrowPhaseCollision/btPointCollector.h"
 #include "SoundDevice.h"
 #include "SoundBuffer.h"
 #include "SoundSource.h"
@@ -29,21 +28,6 @@ float randf()
 {
 	return -1.0f + (rand() / (RAND_MAX / 2.0f));
 }
-
-// Vertex Shader source code
-const char *vertexShaderSource = "#version 330 core\n"
-								 "layout (location = 0) in vec3 aPos;\n"
-								 "void main()\n"
-								 "{\n"
-								 "   gl_Position = vec4(aPos.x, aPos.y, aPos.z, 1.0);\n"
-								 "}\0";
-// Fragment Shader source code
-const char *fragmentShaderSource = "#version 330 core\n"
-								   "out vec4 FragColor;\n"
-								   "void main()\n"
-								   "{\n"
-								   "   FragColor = vec4(0.0f, 1.0f, 0.0f, 1.0f);\n"
-								   "}\n\0";
 
 void menu(int width, int height)
 {
@@ -116,7 +100,7 @@ void gameOver(int width, int height)
 	ImGui::NewFrame();
 	ImGui::SetNextWindowPos(ImVec2(0, 0));
 	ImGui::SetNextWindowSize(ImVec2(width, height));
-	ImGui::Begin("Menu", nullptr, ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove);
+	ImGui::Begin("End", nullptr, ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove);
 	ImGui::Dummy(ImVec2(0, 100));
 	ImGui::SetWindowFontScale(5.0f);
 	ImVec2 titleSize = ImGui::CalcTextSize("Game Over");
@@ -203,21 +187,6 @@ int main()
 	// glm::quat spaceShipRot = glm::rotate(glm::quat(1.0f, 0.0f, 0.0f, 0.0f), glm::radians(-90.0f), glm::vec3(0.0f, 1.0f, 0.0f));
 	glm::quat spaceShipRot = glm::rotate(glm::quat(1.0f, 0.0f, 0.0f, 0.0f), glm::radians(-90.0f), glm::vec3(0.0f, 1.0f, 0.0f));
 
-	// potion pos and rot
-	std::random_device rd;	// Obtain a random number from hardware
-	std::mt19937 gen(rd()); // Seed the generator
-
-	// Define distribution for x, y, z coordinates
-	std::uniform_real_distribution<float> dist(-1000.0f, 1000.0f);
-
-	// Generate random positions for each potion
-	glm::vec3 potionPos1(dist(gen), dist(gen), dist(gen));
-	glm::vec3 potionPos2(dist(gen), dist(gen), dist(gen));
-	glm::vec3 potionPos3(dist(gen), dist(gen), dist(gen));
-	glm::vec3 potionPos4(dist(gen), dist(gen), dist(gen));
-	glm::vec3 potionPos5(dist(gen), dist(gen), dist(gen));
-	glm::quat potionRot = glm::rotate(glm::quat(1.0f, 0.0f, 0.0f, 0.0f), glm::radians(-90.0f), glm::vec3(0.0f, 1.0f, 0.0f));
-
 	// Get the parent directory of the current directory
 	std::string parentDir = (std::filesystem::current_path().std::filesystem::path::parent_path()).string();
 
@@ -287,7 +256,24 @@ int main()
 	AssimpModel potion4(path1);
 	AssimpModel potion5(path1);
 
+	vector<AssimpModel> potions = { potion1, potion2, potion3, potion4, potion5 };
+
+	// potion pos and rot
+	glm::quat potionRot = glm::quat(1.0f, 0.0f, 0.0f, 0.0f);
+	//potionRot = glm::rotate(potionRot, glm::radians(rotationSpeed), glm::vec3(0.0f, 1.0f, 0.0f));
+
+	std::random_device rd;	// Obtain a random number from hardware
+	std::mt19937 gen(rd()); // Seed the generator
+
+	// Define distribution for x, y, z coordinates
+	std::uniform_real_distribution<float> dist(-1000.0f, 1000.0f);
+
+	for (AssimpModel& pot : potions)
+	{
+		pot.position = glm::vec3(dist(gen), dist(gen), dist(gen));
+	}
 	// Paths to all the faces of the cubemap
+
 	std::vector<std::string> facesCubemap =
 		{
 			parentDir + "/Resources/skybox/right.png",
@@ -340,31 +326,7 @@ int main()
 		scales[i] = 0.1f * glm::vec3(randf(), randf(), randf());
 	}
 
-	// Create Vertex Shader Object and get its reference
-	GLuint rectShader = glCreateShader(GL_VERTEX_SHADER);
-	// Attach Vertex Shader source to the Vertex Shader Object
-	glShaderSource(rectShader, 1, &vertexShaderSource, NULL);
-	// Compile the Vertex Shader into machine code
-	glCompileShader(rectShader);
-
-	// Create Fragment Shader Object and get its reference
-	GLuint fragmentShader = glCreateShader(GL_FRAGMENT_SHADER);
-	// Attach Fragment Shader source to the Fragment Shader Object
-	glShaderSource(fragmentShader, 1, &fragmentShaderSource, NULL);
-	// Compile the Vertex Shader into machine code
-	glCompileShader(fragmentShader);
-
-	// Create Shader Program Object and get its reference
-	GLuint rectProgram = glCreateProgram();
-	// Attach the Vertex and Fragment Shaders to the Shader Program
-	glAttachShader(rectProgram, rectShader);
-	glAttachShader(rectProgram, fragmentShader);
-	// Wrap-up/Link all the shaders together into the Shader Program
-	glLinkProgram(rectProgram);
-
-	// Delete the now useless Vertex and Fragment Shader objects
-	glDeleteShader(rectShader);
-	glDeleteShader(fragmentShader);
+	Shader hpShader("hp.vert", "hp.frag");
 
 	float hp = 50.0f; // Initial HP
 	GLuint VAO, VBO;
@@ -387,16 +349,13 @@ int main()
 
 	// Play the main menu sound
 	speaker.Play(mainMenuSound);
-	// std::cout << "Sound1: " << sound1 << std::endl;
 
 	bool showMenu = true;
 	short playMode = 0;
 	double startTime;
 	double countdownDuration = 10.0;
 	double elapsedTime, remainingTime = 10;
-	float collisionTimer = 0.0f;
 	float lastCollisionTime = 0.0f;
-	bool isColliding = false;
 
 	// Main while loop
 	while (!glfwWindowShouldClose(window))
@@ -440,52 +399,24 @@ int main()
 			// Clean the back buffer and assign the new color to it
 			glClear(GL_COLOR_BUFFER_BIT);
 
-			updateHp(hp, VAO, VBO, rectProgram);
+			updateHp(hp, VAO, VBO, hpShader.ID);
 			float currentTime = glfwGetTime();
 			// Define proximity threshold
 			float proximityThreshold = 37.0f; // Adjust this as needed
 
 			// Check if spaceship is near the potion
-			if (glm::distance(camera.Position, potionPos1) < proximityThreshold)
+			for (AssimpModel& pot : potions)
 			{
-				speaker.Play(healSound);
-				hp += 10; // Subject to change
-				if (hp > 100.0f)
-					hp = 100.0f; // Cap HP to 100
-				potionPos1 = glm::vec3(dist(gen), dist(gen), dist(gen));
+				if (glm::distance(spaceShip.position, pot.position) < proximityThreshold)
+				{
+					speaker.Play(healSound);
+					hp += 10; // Subject to change
+					if (hp > 100.0f)
+						hp = 100.0f; // Cap HP to 100
+					pot.position = glm::vec3(dist(gen), dist(gen), dist(gen));
+				}
 			}
-			else if (glm::distance(camera.Position, potionPos2) < proximityThreshold)
-			{
-				speaker.Play(healSound);
-				hp += 10;
-				if (hp > 100.0f)
-					hp = 100.0f;
-				potionPos2 = glm::vec3(dist(gen), dist(gen), dist(gen));
-			}
-			else if (glm::distance(camera.Position, potionPos3) < proximityThreshold)
-			{
-				speaker.Play(healSound);
-				hp += 10;
-				if (hp > 100.0f)
-					hp = 100.0f;
-				potionPos3 = glm::vec3(dist(gen), dist(gen), dist(gen));
-			}
-			else if (glm::distance(camera.Position, potionPos4) < proximityThreshold)
-			{
-				speaker.Play(healSound);
-				hp += 10;
-				if (hp > 100.0f)
-					hp = 100.0f;
-				potionPos4 = glm::vec3(dist(gen), dist(gen), dist(gen));
-			}
-			else if (glm::distance(camera.Position, potionPos5) < proximityThreshold)
-			{
-				speaker.Play(healSound);
-				hp += 10;
-				if (hp > 100.0f)
-					hp = 100.0f;
-				potionPos5 = glm::vec3(dist(gen), dist(gen), dist(gen));
-			}
+			
 			glViewport(0, 0, width, height);
 			// Handles camera inputs
 			// camera.Inputs(window);
@@ -501,11 +432,11 @@ int main()
 				p.draw(shaderProgram, camera);
 			}
 			// spaceShip.Draw(shaderProgram, camera, spaceShipPos, spaceShipRot, glm::vec3(4.0f));
-			potion1.Draw(shaderProgram, camera, potionPos1, potionRot, glm::vec3(18.0f));
-			potion2.Draw(shaderProgram, camera, potionPos2, potionRot, glm::vec3(18.0f));
-			potion3.Draw(shaderProgram, camera, potionPos3, potionRot, glm::vec3(18.0f));
-			potion4.Draw(shaderProgram, camera, potionPos4, potionRot, glm::vec3(18.0f));
-			potion5.Draw(shaderProgram, camera, potionPos5, potionRot, glm::vec3(18.0f));
+
+			for (AssimpModel& pot : potions)
+			{
+				pot.Draw(shaderProgram, camera, pot.position, potionRot, glm::vec3(18.0f));
+			}
 
 			// update spaceship position and rotation
 			spaceShip.update(window, camera);
@@ -523,58 +454,44 @@ int main()
 				p.update();
 			}
 
-			// Draw the asteroids around saturn only
+			// Draw the asteroids around saturn only and update their postion
 			for (unsigned int i = 0; i < number; i++)
 			{
 				asteroid.Draw(shaderProgram, camera, translations[i], rotations[i], scales[i]);
-			}
-
-			// Update the asteroid positions to orbit the sun with saturn
-			for (unsigned int i = 0; i < number; i++)
-			{
 				translations[i] = glm::vec3(translations[i].x * cos(0.0005f) - translations[i].z * sin(-0.0005f), translations[i].y, translations[i].x * sin(-0.0005f) + translations[i].z * cos(0.0005f));
 			}
-			isColliding = false;
+
 			for (int i = 0; i < planets.size(); i++)
 			{
-				float distanceToPlanet = glm::distance(camera.Position, planets[i].planetPos);
+				float distanceToPlanet = glm::distance(spaceShip.position, planets[i].planetPos);
 				float pr;
 				switch (i)
 				{
 				case 0: // sun
-					pr = 95;
-					break;
+					pr = 93;	break;
 				case 1: // mercury
-					pr = 25;
-					break;
+					pr = 23;	break;
 				case 2: // venus
-					pr = 30;
-					break;
+					pr = 38;	break;
 				case 3: // earth
-					pr = 35;
-					break;
+					pr = 33;	break;
 				case 4: // mars
-					pr = 35;
-					break;
+					pr = 33;	break;
 				case 5: // jupiter
-					pr = 55;
-					break;
+					pr = 53;	break;
 				case 6: // saturn
-					pr = 50;
-					break;
+					pr = 45;	break;
 				case 7: // uranus
-					pr = 45;
-					break;
+					pr = 43;	break;
 				case 8: // neptune
-					pr = 45;
-					break;
+					pr = 43;
 				}
 
 				// Ensure the camera doesn't penetrate the planet
 				if (distanceToPlanet < pr)
 				{
-					glm::vec3 directionToPlanet = glm::normalize(camera.Position - planets[i].planetPos);
-					camera.Position = planets[i].planetPos + directionToPlanet * pr;
+					glm::vec3 directionToPlanet = glm::normalize(spaceShip.position - planets[i].planetPos);
+					spaceShip.position = planets[i].planetPos + directionToPlanet * pr;
 					if (currentTime - lastCollisionTime >= 1)
 					{
 						hp -= 10;
@@ -587,7 +504,7 @@ int main()
 			// Draw the skyBox
 			skybox.draw(camera, width, height);
 
-			//////////////////////////////////-----------------------------------------------------//////////////////////////////////
+			//////////////////////////////////-----------------Second view port-------------------//////////////////////////////////
 			// Set the viewport of additional camera to the lower right corner
 			glClear(GL_DEPTH_BUFFER_BIT);
 			int rightViewportWidth = width / 3.75;
@@ -602,31 +519,23 @@ int main()
 			glUniform4f(glGetUniformLocation(shaderProgram.ID, "lightColor"), lightColor.x, lightColor.y, lightColor.z, lightColor.w);
 			glUniform3f(glGetUniformLocation(shaderProgram.ID, "lightPos"), lightPos.x, lightPos.y, lightPos.z);
 
-			// Draw the planets around the sun
+			// Draw the planets around the sun and update rotations
 			for (Planet &p : planets)
 			{
 				p.draw(shaderProgram, camera2);
-			}
-			potion1.Draw(shaderProgram, camera2, potionPos1, potionRot, glm::vec3(18.0f));
-			potion2.Draw(shaderProgram, camera2, potionPos2, potionRot, glm::vec3(18.0f));
-			potion3.Draw(shaderProgram, camera2, potionPos3, potionRot, glm::vec3(18.0f));
-			potion4.Draw(shaderProgram, camera2, potionPos4, potionRot, glm::vec3(18.0f));
-			potion5.Draw(shaderProgram, camera2, potionPos5, potionRot, glm::vec3(18.0f));
-			// Update the sun's and planets' rotations
-			for (Planet &p : planets)
-			{
 				p.update();
 			}
+			spaceShip.draw(shaderProgram, camera2);
 
-			// Draw the asteroids around saturn only
+			for (AssimpModel& pot : potions)
+			{
+				pot.Draw(shaderProgram, camera2, pot.position, potionRot, glm::vec3(18.0f));
+			}
+
+			// Draw the asteroids around saturn only and update their postion
 			for (unsigned int i = 0; i < number; i++)
 			{
 				asteroid.Draw(shaderProgram, camera2, translations[i], rotations[i], scales[i]);
-			}
-
-			// Update the asteroid positions to orbit the sun with saturn
-			for (unsigned int i = 0; i < number; i++)
-			{
 				translations[i] = glm::vec3(translations[i].x * cos(0.0005f) - translations[i].z * sin(-0.0005f), translations[i].y, translations[i].x * sin(-0.0005f) + translations[i].z * cos(0.0005f));
 			}
 
@@ -637,7 +546,7 @@ int main()
 			ImGui::NewFrame();
 			ImGui::SetNextWindowPos(ImVec2(width - 420, 0));
 			ImGui::SetNextWindowSize(ImVec2(width, 40));
-			ImGui::Begin("Menu", nullptr, ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoResize);
+			ImGui::Begin("Time", nullptr, ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoResize);
 			ImGui::SetWindowFontScale(2.0f);
 			if (playMode == 1)
 			{
@@ -658,9 +567,10 @@ int main()
 			if (remainingTime <= 0 || hp <= 0)
 			{
 				gameOver(width, height);
+				//speaker.Stop();
 			}
-			// Swap the back buffer with the front buffer
 		}
+		// Swap the back buffer with the front buffer
 		glfwSwapBuffers(window);
 	}
 
@@ -672,7 +582,7 @@ int main()
 	shaderProgram.Delete();
 	glDeleteVertexArrays(1, &VAO);
 	glDeleteBuffers(1, &VBO);
-	glDeleteProgram(rectProgram);
+	hpShader.Delete();
 	// Delete window
 	glfwDestroyWindow(window);
 
