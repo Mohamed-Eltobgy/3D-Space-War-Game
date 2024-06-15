@@ -19,7 +19,7 @@ public:
 	glm::vec3 orientation = glm::vec3(1.0f, 0.0f, 0.0f);
 	glm::vec3 rotation = glm::vec3(0.0f, -80.0f, 0.0f);
 	glm::vec3 scale;
-
+	
 	// Stores the width and height of the window
 	int width;
 	int height;
@@ -31,7 +31,7 @@ public:
 	AssimpModel* Model;
 
 	// Ammo constructor to set up initial values
-	Ammo(string& modelPath, int width, int height, glm::vec3 position, glm::vec3 orientation, glm::vec3 scale);
+	Ammo(string& modelPath, int width, int height, glm::vec3 position, glm::vec3 orientation, glm::vec3 rotation,glm::vec3 scale);
 
 	// Comparison operator for std::set
 	bool operator<(const Ammo& other) const {

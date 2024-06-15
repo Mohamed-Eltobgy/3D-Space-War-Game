@@ -38,6 +38,8 @@ void SpaceShip::update(GLFWwindow* window,Camera &camera,SoundSource &speaker) {
 		position += speed * -up;
 	}
 
+	//std::cout << position.x << " " << position.y << " " << position.z << std::endl;
+
 	// Handles mouse inputs
 	if (glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_LEFT) == GLFW_PRESS)
 	{
@@ -106,7 +108,7 @@ void SpaceShip::update(GLFWwindow* window,Camera &camera,SoundSource &speaker) {
 	if (glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_RIGHT) == GLFW_PRESS && !mouse_button_held)
 	{
 		speaker.Play(shootingSound);
-		ammoController->addAmmo(width,height,position,orientation);
+		ammoController->addAmmo(width, height, position, orientation, glm::vec3(0.0f, -90.0f, 0.0f),"Player");
 		mouse_button_held = true;
 	}
 	else if (glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_RIGHT) == GLFW_RELEASE) {

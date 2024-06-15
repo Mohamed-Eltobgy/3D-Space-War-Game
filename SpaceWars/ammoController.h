@@ -9,6 +9,7 @@ class AmmoController {
 private:
     static AmmoController* instance;
     vector<Ammo> ammoList;
+    vector<Ammo> enemyAmmoList;
     // Private constructor to prevent instantiation from outside
     AmmoController();
 
@@ -20,7 +21,7 @@ private:
 public:
     // Static method to get the single instance of the class
     static AmmoController* getInstance();
-    void addAmmo(int width, int height, glm::vec3 position, glm::vec3 orientation);
+    void addAmmo(int width, int height, glm::vec3 position, glm::vec3 orientation, glm::vec3 rotation,std::string type);
     void updateAmmos(GLFWwindow* window);
     void drawAmmos(Shader shaderProgram,Camera camera);
 };

@@ -1,8 +1,8 @@
 #include "ammo.h"
 #include "flyWeightModelFactory.h"
 
-Ammo::Ammo(string& modelPath, int width, int height, glm::vec3 position,glm::vec3 orientation, glm::vec3 scale)
-	:width(width), height(height), position(position), orientation(orientation), scale(scale)
+Ammo::Ammo(string& modelPath, int width, int height, glm::vec3 position,glm::vec3 orientation, glm::vec3 rotation, glm::vec3 scale)
+	:width(width), height(height), position(position), orientation(orientation), rotation(rotation),scale(scale)
 {
 	FlyWeightModelFactory* flyWeightModelFactory = FlyWeightModelFactory::getInstance();
 	Model = flyWeightModelFactory->getModel("Ammo",modelPath);
