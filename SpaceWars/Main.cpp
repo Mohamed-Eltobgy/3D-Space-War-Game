@@ -97,7 +97,7 @@ void updateHp(float hp, GLuint &VAO, GLuint &VBO, GLuint rectProgram)
 	glBindVertexArray(0);
 }
 
-void gameOver(int width, int height, int score)
+void gameOver(int width, int height, int score, int diamonds)
 {
 	ImGui_ImplOpenGL3_NewFrame();
 	ImGui_ImplGlfw_NewFrame();
@@ -113,7 +113,7 @@ void gameOver(int width, int height, int score)
 
 	// Draw the title
 	ImGui::SetCursorPos(titlePosition);
-	ImGui::Text("Game Over\n\n\nScore: %d", score);
+	ImGui::Text("Game Over\n\n\nScore: %d\n\n\nDiamonds: %d", score, diamonds);
 	ImGui::End();
 	ImGui::Render();
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -582,23 +582,23 @@ int main()
 					switch (i)
 					{
 					case 0: // sun
-						pr = 93;	break;
+						pr = 90;	break;
 					case 1: // mercury
-						pr = 23;	break;
+						pr = 20;	break;
 					case 2: // venus
-						pr = 38;	break;
+						pr = 35;	break;
 					case 3: // earth
-						pr = 33;	break;
+						pr = 30;	break;
 					case 4: // mars
-						pr = 33;	break;
+						pr = 30;	break;
 					case 5: // jupiter
-						pr = 53;	break;
+						pr = 50;	break;
 					case 6: // saturn
-						pr = 45;	break;
+						pr = 42;	break;
 					case 7: // uranus
-						pr = 43;	break;
+						pr = 40;	break;
 					case 8: // neptune
-						pr = 43;
+						pr = 40;
 					}
 
 					if (distanceToPlanet < pr)
@@ -739,7 +739,7 @@ int main()
 			if (remainingTime <= 0 || hp <= 0 || (score >= maxScore && playMode == 1))
 			{
 				glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
-				gameOver(width, height, score);
+				gameOver(width, height, score, diamonds);
 				over = true;
 			}
 			// Swap the back buffer with the front buffer
