@@ -15,6 +15,7 @@
 #include "ammoController.h"
 #include "flyWeightModelFactory.h"
 #include "enemy.h"
+#include "collectable.h"
 
 // Window dimensions
 const unsigned int width = 1400;
@@ -184,6 +185,18 @@ int main()
 	// Static Camera
 	Camera camera2(width, height, glm::vec3(0.0f, 1600.0f, 0.0f));
 	camera2.Orientation = glm::vec3(0.01f, -1.0f, 0.0f);
+
+	//Randomization
+	std::random_device rd;	// Obtain a random number from hardware
+	std::mt19937 gen(rd()); // Seed the generator
+
+	// Define distribution for x, y, z coordinates
+	std::uniform_real_distribution<float> dist(-500.0f, 500.0f);
+
+	std::uniform_real_distribution<float> speed(0.5f, 2.0f);
+	//Enemy Health
+	std::uniform_real_distribution<float> health(1.0f, 4.0f);
+
 	// spaceShip pos and Rot
 	glm::vec3 spaceShipPos = glm::vec3(-530.0f, 0.0f, 0.0f);
 	glm::vec3 spaceShipScale = glm::vec3(3.0f);
@@ -259,49 +272,64 @@ int main()
 	AssimpModel smoke1(path2);
 
 	// potion
-	std::string potionPath = "/Resources/models/potion/scene.gltf";
-	string path1 = parentDir + potionPath;
-	AssimpModel potion1(path1);
-	AssimpModel potion2(path1);
-	AssimpModel potion3(path1);
-	AssimpModel potion4(path1);
-	AssimpModel potion5(path1);
+	string potionPath = "/Resources/models/potion/scene.gltf";
+	potionPath = parentDir + potionPath;
+	string potionModelName = "health";
 
-	vector<AssimpModel> potions = { potion1, potion2, potion3, potion4, potion5 };
-
-	// potion pos and rot
-	glm::quat potionRot = glm::quat(1.0f, 0.0f, 0.0f, 0.0f);
-	//potionRot = glm::rotate(potionRot, glm::radians(rotationSpeed), glm::vec3(0.0f, 1.0f, 0.0f));
-
-	std::random_device rd;	// Obtain a random number from hardware
-	std::mt19937 gen(rd()); // Seed the generator
-
-	// Define distribution for x, y, z coordinates
-	std::uniform_real_distribution<float> dist(-1000.0f, 1000.0f);
-	
-	std::uniform_real_distribution<float> speed(0.5f, 2.0f);
-
-	for (AssimpModel& pot : potions)
+	int numOfPotions = 15;
+	vector<Collectable> potions;
+	for (int i = 0; i < numOfPotions; i++)
 	{
-		pot.position = glm::vec3(dist(gen), dist(gen), dist(gen));
-	}
-	// Paths to all the faces of the cubemap
+		potions.push_back(Collectable(potionPath, potionModelName, width, height, glm::vec3(dist(gen), dist(gen), dist(gen)),
+			glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(6.0f)));
 
+	}
+
+	//power potion
+	string powerPotionPath = "/Resources/models/potion2/scene.gltf";
+	powerPotionPath = parentDir + powerPotionPath;
+	string powerModelName = "power";
+
+	int numOfpPotions = 15;
+	vector<Collectable> powerPotions;
+	for (int i = 0; i < numOfpPotions; i++)
+	{
+		powerPotions.push_back(Collectable(powerPotionPath, powerModelName, width, height, glm::vec3(dist(gen), dist(gen), dist(gen)),
+										glm::vec3(0.0f, 0.0f, 90.0f), glm::vec3(1.0f)));
+
+	}
+
+	//power potion
+	string crystalPath = "/Resources/models/crystal/scene.gltf";
+	crystalPath = parentDir + crystalPath;
+	string crystalModelName = "crystal";
+
+	int numOfCrystals = 10;
+	vector<Collectable> crystals;
+	for (int i = 0; i < numOfCrystals; i++)
+	{
+		crystals.push_back(Collectable(crystalPath, crystalModelName, width, height, glm::vec3(dist(gen), dist(gen), dist(gen)),
+							glm::vec3(0.0f, 0.0f, 90.0f), glm::vec3(4.0f)));
+
+	}
+
+
+	// Paths to all the faces of the cubemap
 	std::vector<std::string> facesCubemap =
 		{
-			parentDir + "/Resources/skybox/right.png",
-			parentDir + "/Resources/skybox/left.png",
-			parentDir + "/Resources/skybox/top.png",
-			parentDir + "/Resources/skybox/bottom.png",
-			parentDir + "/Resources/skybox/front.png",
-			parentDir + "/Resources/skybox/back.png",
+			parentDir + "/Resources/skybox/nebula.png",
+			parentDir + "/Resources/skybox/nebula.png",
+			parentDir + "/Resources/skybox/nebula.png",
+			parentDir + "/Resources/skybox/nebula.png",
+			parentDir + "/Resources/skybox/nebula.png",
+			parentDir + "/Resources/skybox/nebula.png",
 		};
 
 	// Create Skybox object
 	SkyBox skybox(facesCubemap, "skybox.vert", "skybox.frag");
 
 	// The number of asteroids to be created
-	const unsigned int number = 200;
+	const unsigned int number = 100;
 
 	// Radius of circle around which asteroids orbit
 	float radius = 60.0f;
@@ -351,10 +379,12 @@ int main()
 	// Initialize the sound device and effects
 	SoundDevice *soundDevice = SoundDevice::get();
 	uint32_t healSound = SoundBuffer::get()->addSoundEffect((parentDir + "/Resources/sounds/heal.ogg").c_str());
+	uint32_t manaSound = SoundBuffer::get()->addSoundEffect((parentDir + "/Resources/sounds/mana.ogg").c_str());
+	uint32_t crystalSound = SoundBuffer::get()->addSoundEffect((parentDir + "/Resources/sounds/crytsal.ogg").c_str());
 	uint32_t mainMenuSound = SoundBuffer::get()->addSoundEffect((parentDir + "/Resources/sounds/mainmenu.ogg").c_str());
 	uint32_t crashSound = SoundBuffer::get()->addSoundEffect((parentDir + "/Resources/sounds/shipcrash.ogg").c_str());
 	uint32_t shootingSound = SoundBuffer::get()->addSoundEffect((parentDir + "/Resources/sounds/shooting.ogg").c_str());
-	SoundSource speaker, spaceShipSpeaker;
+	SoundSource speaker, spaceShipSpeaker, healSpeaker,manaSpeaker,crystalSpeaker;
 
 	spaceShip.shootingSound = shootingSound;
 
@@ -374,6 +404,7 @@ int main()
 	double deltaTime = 0.0;
 
 	int score = 0, maxScore = 10;
+	int diamonds = 0;
 
 	// Get the AmmoController instance and use it
 	AmmoController* ammoController = AmmoController::getInstance();
@@ -384,7 +415,7 @@ int main()
 
 	vector<Enemy> enemyList;
 	for (int i = 0; i < 5; i++) {
-		enemyList.push_back(Enemy(enemySpaceShipPath, width, height, glm::vec3(dist(gen), dist(gen), dist(gen)), 
+		enemyList.push_back(Enemy(enemySpaceShipPath, width, height, health(gen), glm::vec3(dist(gen), dist(gen), dist(gen)),
 													glm::vec3(3.0f), glm::vec3(speed(gen), speed(gen), speed(gen))));
 	}
 		
@@ -444,15 +475,39 @@ int main()
 				float proximityThreshold = 40.0f; // Adjust this as needed
 
 				// Check if spaceship is near the potion
-				for (AssimpModel& pot : potions)
+				for (Collectable& powerPotion : powerPotions)
+				{
+					if (glm::distance(spaceShip.position, powerPotion.position) < proximityThreshold)
+					{
+						manaSpeaker.Play(manaSound);
+						hp += 10; // Subject to change
+						if (hp > 100.0f)
+							hp = 100.0f; // Cap HP to 100
+						powerPotion.position = glm::vec3(dist(gen), dist(gen), dist(gen));
+					}
+				}
+				
+				// Check if spaceship is near the potion
+				for (Collectable& pot : potions)
 				{
 					if (glm::distance(spaceShip.position, pot.position) < proximityThreshold)
 					{
-						speaker.Play(healSound);
+						healSpeaker.Play(healSound);
 						hp += 10; // Subject to change
 						if (hp > 100.0f)
 							hp = 100.0f; // Cap HP to 100
 						pot.position = glm::vec3(dist(gen), dist(gen), dist(gen));
+					}
+				}
+
+				// Check if spaceship is near the potion
+				for (Collectable& crystal : crystals)
+				{
+					if (glm::distance(spaceShip.position, crystal.position) < proximityThreshold)
+					{
+						crystalSpeaker.Play(crystalSound);
+						diamonds++;
+						crystal.position = glm::vec3(dist(gen), dist(gen), dist(gen));
 					}
 				}
 
@@ -472,10 +527,21 @@ int main()
 				}
 				// spaceShip.Draw(shaderProgram, camera, spaceShipPos, spaceShipRot, glm::vec3(4.0f));
 
-				for (AssimpModel& pot : potions)
+				for (Collectable& pot : potions)
 				{
-					pot.Draw(shaderProgram, camera, pot.position, potionRot, glm::vec3(20.0f));
+					pot.draw(shaderProgram, camera);
 				}
+
+				for (Collectable& powerPotion : powerPotions)
+				{
+					powerPotion.draw(shaderProgram, camera);
+				}
+
+				for (Collectable& crystal : crystals)
+				{
+					crystal.draw(shaderProgram, camera);
+				}
+
 
 				// update spaceship position and rotation
 				spaceShip.update(window, camera, spaceShipSpeaker);
@@ -566,10 +632,17 @@ int main()
 				for (int i = 0; i < enemyList.size(); i++) {
 					for (int j = 0; j < ammoController->ammoList.size(); j++) {
 						if (glm::distance(enemyList[i].position, ammoController->ammoList[j].position) < 15) {
-							enemyList[i].position = glm::vec3(dist(gen), dist(gen), dist(gen));
-							score++;
-							speaker.Play(crashSound);
+							if (enemyList[i].hp == 0) {
+								enemyList[i].hp = health(gen);
+								enemyList[i].position = glm::vec3(dist(gen), dist(gen), dist(gen));
+								score++;
+								speaker.Play(crashSound);
+							}
+							else {
+								enemyList[i].hp--;
+							}
 							smoke1.Draw(shaderProgram, camera, enemyList[i].position, glm::quat(glm::radians(glm::vec3(0.0f))), glm::vec3(2.0f));
+							ammoController->ammoList.erase(ammoController->ammoList.begin() + j);
 						}
 					}
 				}
@@ -579,6 +652,7 @@ int main()
 						if (currentTime - lastCollisionTime >= 1)
 						{
 							hp -= 5;
+							ammoController->enemyAmmoList.erase(ammoController->enemyAmmoList.begin() + j);
 							lastCollisionTime = currentTime;
 							speaker.Play(crashSound);
 							smoke1.Draw(shaderProgram, camera, spaceShip.position, glm::quat(glm::radians(glm::vec3(0.0f))), glm::vec3(2.0f));
@@ -611,9 +685,15 @@ int main()
 				}
 				spaceShip.draw(shaderProgram, camera2);
 
-				for (AssimpModel& pot : potions)
+
+				for (Collectable& powerPotion : powerPotions)
 				{
-					pot.Draw(shaderProgram, camera2, pot.position, potionRot, glm::vec3(18.0f));
+					powerPotion.draw(shaderProgram, camera2);
+				}
+
+				for (Collectable& pot : potions)
+				{
+					pot.draw(shaderProgram, camera2);
 				}
 
 				// Draw the asteroids around saturn only and update their postion
@@ -657,6 +737,7 @@ int main()
 			}
 			if (remainingTime <= 0 || hp <= 0 || (score >= maxScore && playMode == 1))
 			{
+				glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
 				gameOver(width, height, score);
 				over = true;
 			}

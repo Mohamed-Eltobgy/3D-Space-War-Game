@@ -163,6 +163,7 @@
   <ItemGroup>
     <ClCompile Include="ammo.cpp" />
     <ClCompile Include="ammoController.cpp" />
+    <ClCompile Include="collectable.cpp" />
     <ClCompile Include="enemy.cpp" />
     <ClCompile Include="flyWeightModelFactory.cpp" />
     <ClCompile Include="flyWeightModelFactory.h" />
@@ -195,6 +196,7 @@
   <ItemGroup>
     <ClInclude Include="ammo.h" />
     <ClInclude Include="ammoController.h" />
+    <ClInclude Include="collectable.h" />
     <ClInclude Include="enemy.h" />
     <ClInclude Include="imgui\imconfig.h" />
     <ClInclude Include="imgui\imgui.h" />

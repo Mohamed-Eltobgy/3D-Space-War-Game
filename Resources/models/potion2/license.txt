@@ -1,0 +1,11 @@
+Model Information:
+* title:	Potion
+* source:	https://sketchfab.com/3d-models/potion-5079014d2c8e4f879790e4b88142c9a0
+* author:	rudolfs (https://sketchfab.com/rudolfs)
+
+Model License:
+* license type:	CC-BY-4.0 (http://creativecommons.org/licenses/by/4.0/)
+* requirements:	Author must be credited. Commercial use is allowed.
+
+If you use this 3D model in your project be sure to copy paste this credit wherever you share it:
+This work is based on "Potion" (https://sketchfab.com/3d-models/potion-5079014d2c8e4f879790e4b88142c9a0) by rudolfs (https://sketchfab.com/rudolfs) licensed under CC-BY-4.0 (http://creativecommons.org/licenses/by/4.0/)

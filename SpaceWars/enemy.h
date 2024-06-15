@@ -29,6 +29,7 @@ public:
     // Stores the width and height of the window
     int width;
     int height;
+    int hp;
 
 	//Control ammo
 	AmmoController* ammoController;
@@ -39,7 +40,7 @@ public:
     AssimpModel* Model;
 
 	// SpaceShip constructor to set up initial values
-	Enemy(string& modelPath, int width, int height, glm::vec3 position, glm::vec3 scale, glm::vec3 speed);
+	Enemy(string& modelPath, int width, int height,int hp,glm::vec3 position, glm::vec3 scale, glm::vec3 speed);
 
 	// Comparison operator for std::set
 	bool operator<(const Enemy& other) const {

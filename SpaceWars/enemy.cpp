@@ -4,8 +4,8 @@
 #include "enemy.h"
 #include "flyWeightModelFactory.h"
 
-Enemy::Enemy(string& modelPath, int width, int height, glm::vec3 position, glm::vec3 scale, glm::vec3 speed)
-	:width(width), height(height), position(position), scale(scale),speed(speed)
+Enemy::Enemy(string& modelPath, int width, int height,int hp, glm::vec3 position, glm::vec3 scale, glm::vec3 speed)
+	:width(width), height(height), hp(hp), position(position), scale(scale),speed(speed)
 {
 	ammoController = AmmoController::getInstance();
 
