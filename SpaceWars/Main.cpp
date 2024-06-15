@@ -247,7 +247,7 @@ int main()
 	//std::string spaceShipPath = parentDir + "/Resources/models/bullet/bullet.obj";
 
 	//Ammo path
-	std::string ammoPath = parentDir + "/Resources/models/bullet/bullet.obj";
+	std::string ammoPath = parentDir + "/Resources/models/bullet2/scene.gltf";
 
 	// Model spaceShip((parentDir + spaceShipPath).c_str());
 	SpaceShip spaceShip(spaceShipPath, width, height, spaceShipPos, spaceShipScale);
@@ -373,6 +373,7 @@ int main()
 	double lastFrameTime = glfwGetTime();
 	double deltaTime = 0.0;
 
+	int score = 0, maxScore = 10;
 
 	// Get the AmmoController instance and use it
 	AmmoController* ammoController = AmmoController::getInstance();
@@ -544,7 +545,6 @@ int main()
 							lastCollisionTime = currentTime;
 							speaker.Play(crashSound);
 							smoke1.Draw(shaderProgram, camera, spaceShip.position, glm::quat(glm::radians(glm::vec3(0.0f))), glm::vec3(2.0f));
-
 						}
 					}
 				}
@@ -554,13 +554,31 @@ int main()
 
 				// Collision detection with enemies
 				for (int i = 0; i < enemyList.size(); i++) {
-					if (glm::distance(spaceShip.position, enemyList[i].position) < 50) {
-						float er = 80.0;
-						glm::vec3 direction = glm::normalize(spaceShip.position - enemyList[i].position);
-						enemyList[i].position = spaceShip.position + direction * er;
+					if (glm::distance(spaceShip.position, enemyList[i].position) < 40) {
+						enemyList[i].position = glm::vec3(dist(gen), dist(gen), dist(gen));
+						hp -= 20;
+						score++;
+						speaker.Play(crashSound);
+						smoke1.Draw(shaderProgram, camera, enemyList[i].position, glm::quat(glm::radians(glm::vec3(0.0f))), glm::vec3(2.0f));
+					}
+				}
+				// killing enemies
+				for (int i = 0; i < enemyList.size(); i++) {
+					for (int j = 0; j < ammoController->ammoList.size(); j++) {
+						if (glm::distance(enemyList[i].position, ammoController->ammoList[j].position) < 15) {
+							enemyList[i].position = glm::vec3(dist(gen), dist(gen), dist(gen));
+							score++;
+							speaker.Play(crashSound);
+							smoke1.Draw(shaderProgram, camera, enemyList[i].position, glm::quat(glm::radians(glm::vec3(0.0f))), glm::vec3(2.0f));
+						}
+					}
+				}
+
+				for (int j = 0; j < ammoController->enemyAmmoList.size(); j++) {
+					if (glm::distance(spaceShip.position, ammoController->enemyAmmoList[j].position) < 15) {
 						if (currentTime - lastCollisionTime >= 1)
 						{
-							hp -= 10;
+							hp -= 5;
 							lastCollisionTime = currentTime;
 							speaker.Play(crashSound);
 							smoke1.Draw(shaderProgram, camera, spaceShip.position, glm::quat(glm::radians(glm::vec3(0.0f))), glm::vec3(2.0f));
@@ -605,13 +623,18 @@ int main()
 					translations[i] = glm::vec3(translations[i].x * cos(0.0005f) - translations[i].z * sin(-0.0005f), translations[i].y, translations[i].x * sin(-0.0005f) + translations[i].z * cos(0.0005f));
 				}
 
+				//draw Enemies
+				for (Enemy& enemy : enemyList) {
+					enemy.draw(shaderProgram, camera2);
+				}
+
 				skybox.draw(camera2, width, height);
 
 				ImGui_ImplOpenGL3_NewFrame();
 				ImGui_ImplGlfw_NewFrame();
 				ImGui::NewFrame();
 				ImGui::SetNextWindowPos(ImVec2(width - 420, 0));
-				ImGui::SetNextWindowSize(ImVec2(width, 40));
+				ImGui::SetNextWindowSize(ImVec2(width, 75));
 				ImGui::Begin("Time", nullptr, ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoResize);
 				ImGui::SetWindowFontScale(2.0f);
 				if (playMode == 1)
@@ -625,13 +648,14 @@ int main()
 					elapsedTime = glfwGetTime() - startTime;
 					ImGui::Text("Time Elapsed: %.0f seconds", elapsedTime);
 				}
+				ImGui::Text("Score: %d", score);
 				ImGui::End();
 				ImGui::Render();
 				glClear(GL_DEPTH_BUFFER_BIT);
 				ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
 
 			}
-			if (remainingTime <= 0 || hp <= 0)
+			if (remainingTime <= 0 || hp <= 0 || (score >= maxScore && playMode == 1))
 			{
 				gameOver(width, height);
 				over = true;
