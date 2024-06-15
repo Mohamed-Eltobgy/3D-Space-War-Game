@@ -21,6 +21,16 @@ void Enemy::update(GLFWwindow* window, Camera& camera,glm::vec3 playerPos) {
     //rotateVectorByAngle()
     orientation = newOrientation;
 
+	// Get the current time
+	double currentTime = glfwGetTime();
+	// Check if the interval has passed
+	if (currentTime - lastTime >= ammoInterval)
+	{
+		ammoController->addAmmo(width, height, position, orientation,glm::vec3(0.0f, 90.0f, 0.0f),"Enemy");
+		// Update the time of the last function call
+		lastTime = currentTime;
+	}
+
 	position += speed * orientation;
 }
 
