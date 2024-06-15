@@ -341,15 +341,12 @@ int main()
 
 	Shader hpShader("hp.vert", "hp.frag");
 
-	float hp = 50.0f; // Initial HP
+	float hp = 100.0f; // Initial HP
 	GLuint VAO, VBO;
 
 	// Generate the VAO and VBO with only 1 object each
 	glGenVertexArrays(1, &VAO);
 	glGenBuffers(1, &VBO);
-
-	// Update HP initially
-	// updateHp(hp, VAO, VBO);
 
 	// Initialize the sound device and effects
 	SoundDevice *soundDevice = SoundDevice::get();
@@ -357,14 +354,14 @@ int main()
 	uint32_t mainMenuSound = SoundBuffer::get()->addSoundEffect((parentDir + "/Resources/sounds/mainmenu.ogg").c_str());
 	uint32_t crashSound = SoundBuffer::get()->addSoundEffect((parentDir + "/Resources/sounds/shipcrash.ogg").c_str());
 	uint32_t shootingSound = SoundBuffer::get()->addSoundEffect((parentDir + "/Resources/sounds/shooting.ogg").c_str());
-	SoundSource speaker;
+	SoundSource speaker, spaceShipSpeaker;
 
 	spaceShip.shootingSound = shootingSound;
 
 	// Play the main menu sound
 	speaker.Play(mainMenuSound);
 
-	bool showMenu = true;
+	bool showMenu = true, over = false;
 	short playMode = 0;
 	double startTime;
 	double countdownDuration = 10.0;
@@ -435,7 +432,7 @@ int main()
 			glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 			ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
 
-			if (!showMenu)
+			if (!showMenu && !over)
 			{
 				// Clean the back buffer and assign the new color to it
 				glClear(GL_COLOR_BUFFER_BIT);
@@ -479,23 +476,23 @@ int main()
 					pot.Draw(shaderProgram, camera, pot.position, potionRot, glm::vec3(18.0f));
 				}
 
-			// update spaceship position and rotation
-			spaceShip.update(window, camera, speaker);
-			// Updates and exports the camera matrix to the Vertex Shader
-			camera.updateMatrix(45.0f, 0.1f, 2000.0f);
-			// draw the space ship
-			spaceShip.draw(shaderProgram, camera);
+				// update spaceship position and rotation
+				spaceShip.update(window, camera, spaceShipSpeaker);
+				// Updates and exports the camera matrix to the Vertex Shader
+				camera.updateMatrix(45.0f, 0.1f, 2000.0f);
+				// draw the space ship
+				spaceShip.draw(shaderProgram, camera);
 
-			//update Enemies
-			for (Enemy& enemy : enemyList) {
-				enemy.update(window,camera, spaceShip.position);
-			}
-			//draw Enemies
-			for (Enemy& enemy : enemyList) {
-				enemy.draw(shaderProgram,camera);
-			}
-			// spaceShip.Draw(shaderProgram, camera, spaceShipPos, spaceShipRot, glm::vec3(4.0f));
-			// spaceShipPos += glm::vec3(0.1f, 0.0f, 0.0f);
+				//update Enemies
+				for (Enemy& enemy : enemyList) {
+					enemy.update(window,camera, spaceShip.position);
+				}
+				//draw Enemies
+				for (Enemy& enemy : enemyList) {
+					enemy.draw(shaderProgram,camera);
+				}
+				// spaceShip.Draw(shaderProgram, camera, spaceShipPos, spaceShipRot, glm::vec3(4.0f));
+				// spaceShipPos += glm::vec3(0.1f, 0.0f, 0.0f);
 
 				// Update the sun's and planets' rotations
 				for (Planet& p : planets)
@@ -510,6 +507,7 @@ int main()
 					translations[i] = glm::vec3(translations[i].x * cos(0.0005f) - translations[i].z * sin(-0.0005f), translations[i].y, translations[i].x * sin(-0.0005f) + translations[i].z * cos(0.0005f));
 				}
 
+				// Collision detection with planets
 				for (int i = 0; i < planets.size(); i++)
 				{
 					float distanceToPlanet = glm::distance(spaceShip.position, planets[i].planetPos);
@@ -536,7 +534,6 @@ int main()
 						pr = 43;
 					}
 
-					// Ensure the camera doesn't penetrate the planet
 					if (distanceToPlanet < pr)
 					{
 						glm::vec3 directionToPlanet = glm::normalize(spaceShip.position - planets[i].planetPos);
@@ -552,11 +549,26 @@ int main()
 					}
 				}
 
-			ammoController->updateAmmos(window);
-			ammoController->drawAmmos(shaderProgram, camera);
+				ammoController->updateAmmos(window);
+				ammoController->drawAmmos(shaderProgram, camera);
 
-			// Draw the skyBox
-			skybox.draw(camera, width, height);
+				// Collision detection with enemies
+				for (int i = 0; i < enemyList.size(); i++) {
+					if (glm::distance(spaceShip.position, enemyList[i].position) < 50) {
+						float er = 80.0;
+						glm::vec3 direction = glm::normalize(spaceShip.position - enemyList[i].position);
+						enemyList[i].position = spaceShip.position + direction * er;
+						if (currentTime - lastCollisionTime >= 1)
+						{
+							hp -= 10;
+							lastCollisionTime = currentTime;
+							speaker.Play(crashSound);
+							smoke1.Draw(shaderProgram, camera, spaceShip.position, glm::quat(glm::radians(glm::vec3(0.0f))), glm::vec3(2.0f));
+						}
+					}
+				}
+				// Draw the skyBox
+				skybox.draw(camera, width, height);
 
 				//////////////////////////////////-----------------Second view port-------------------//////////////////////////////////
 				// Set the viewport of additional camera to the lower right corner
@@ -618,11 +630,11 @@ int main()
 				glClear(GL_DEPTH_BUFFER_BIT);
 				ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
 
-				if (remainingTime <= 0 || hp <= 0)
-				{
-					gameOver(width, height);
-					//speaker.Stop();
-				}
+			}
+			if (remainingTime <= 0 || hp <= 0)
+			{
+				gameOver(width, height);
+				over = true;
 			}
 			// Swap the back buffer with the front buffer
 			glfwSwapBuffers(window);
