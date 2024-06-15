@@ -39,12 +39,12 @@ void SpaceShip::update(GLFWwindow* window,Camera &camera,SoundSource &speaker) {
 	}
 
 	//std::cout << position.x << " " << position.y << " " << position.z << std::endl;
-
+	
 	// Handles mouse inputs
 	if (glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_LEFT) == GLFW_PRESS)
 	{
 		// Hides mouse cursor
-		glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_HIDDEN);
+		glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
 
 		// Prevents camera from jumping on the first click
 		if (firstClick)

@@ -22,6 +22,7 @@ AssimpModel* FlyWeightModelFactory::getModel(std::string key,std::string modelPa
         return iter->second;
     }
     else {
+        cout << "new Model added :" <<  key << endl;
         AssimpModel* model = new AssimpModel(modelPath);
         modelsMap[key] = model;
         return model;
