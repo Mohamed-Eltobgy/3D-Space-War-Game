@@ -96,7 +96,7 @@ void updateHp(float hp, GLuint &VAO, GLuint &VBO, GLuint rectProgram)
 	glBindVertexArray(0);
 }
 
-void gameOver(int width, int height)
+void gameOver(int width, int height, int score)
 {
 	ImGui_ImplOpenGL3_NewFrame();
 	ImGui_ImplGlfw_NewFrame();
@@ -112,7 +112,7 @@ void gameOver(int width, int height)
 
 	// Draw the title
 	ImGui::SetCursorPos(titlePosition);
-	ImGui::Text("Game Over");
+	ImGui::Text("Game Over\n\n\nScore: %d", score);
 	ImGui::End();
 	ImGui::Render();
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -247,7 +247,7 @@ int main()
 	//std::string spaceShipPath = parentDir + "/Resources/models/bullet/bullet.obj";
 
 	//Ammo path
-	std::string ammoPath = parentDir + "/Resources/models/bullet2/scene.gltf";
+	std::string ammoPath = parentDir + "/Resources/models/bullet/bullet.obj";
 
 	// Model spaceShip((parentDir + spaceShipPath).c_str());
 	SpaceShip spaceShip(spaceShipPath, width, height, spaceShipPos, spaceShipScale);
@@ -441,7 +441,7 @@ int main()
 				updateHp(hp, VAO, VBO, hpShader.ID);
 				float currentTime = glfwGetTime();
 				// Define proximity threshold
-				float proximityThreshold = 37.0f; // Adjust this as needed
+				float proximityThreshold = 40.0f; // Adjust this as needed
 
 				// Check if spaceship is near the potion
 				for (AssimpModel& pot : potions)
@@ -474,7 +474,7 @@ int main()
 
 				for (AssimpModel& pot : potions)
 				{
-					pot.Draw(shaderProgram, camera, pot.position, potionRot, glm::vec3(18.0f));
+					pot.Draw(shaderProgram, camera, pot.position, potionRot, glm::vec3(20.0f));
 				}
 
 				// update spaceship position and rotation
@@ -657,7 +657,7 @@ int main()
 			}
 			if (remainingTime <= 0 || hp <= 0 || (score >= maxScore && playMode == 1))
 			{
-				gameOver(width, height);
+				gameOver(width, height, score);
 				over = true;
 			}
 			// Swap the back buffer with the front buffer
