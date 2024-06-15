@@ -34,8 +34,6 @@ public:
 	AmmoController* ammoController;
 	double ammoInterval = 4.0;
 	double lastTime = glfwGetTime();
-    // Control ammo
-    AmmoController* ammoController;
 
     // Extrinsic Model
     AssimpModel* Model;
