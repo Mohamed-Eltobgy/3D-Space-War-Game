@@ -1,4 +1,4 @@
-#### 3D Space War Game in the Solar System
+### 3D Space War Game in the Solar System
 
 ## Overview
 Welcome to our 3D Space War game set in the solar system! In this immersive game, players control a spacecraft to explore the solar system while engaging in battles with enemy spacecraft. The game offers two viewports: a first-person view from the player's spacecraft and a view of the entire solar system.
