@@ -714,7 +714,7 @@ int main()
 				ImGui_ImplGlfw_NewFrame();
 				ImGui::NewFrame();
 				ImGui::SetNextWindowPos(ImVec2(width - 420, 0));
-				ImGui::SetNextWindowSize(ImVec2(width, 75));
+				ImGui::SetNextWindowSize(ImVec2(width, 105));
 				ImGui::Begin("Time", nullptr, ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoResize);
 				ImGui::SetWindowFontScale(2.0f);
 				if (playMode == 1)
@@ -729,6 +729,7 @@ int main()
 					ImGui::Text("Time Elapsed: %.0f seconds", elapsedTime);
 				}
 				ImGui::Text("Score: %d", score);
+				ImGui::Text("Diamonds: %d", diamonds);
 				ImGui::End();
 				ImGui::Render();
 				glClear(GL_DEPTH_BUFFER_BIT);
