@@ -26,8 +26,6 @@ void AmmoController::addAmmo(int width, int height, glm::vec3 position, glm::vec
     else {
         ammoList.push_back(ammo);
     }
-    
-    cout << ammoList.size() << endl;
 }
 
 void AmmoController::updateAmmos(GLFWwindow* window) {
@@ -37,6 +35,16 @@ void AmmoController::updateAmmos(GLFWwindow* window) {
     for (Ammo& ammo : enemyAmmoList) {
         ammo.update(window);
     }
+
+    // Define the condition for removal
+    auto condition = [](const Ammo& ammo) {
+        return (ammo.position.x * ammo.position.x + ammo.position.y * ammo.position.y + ammo.position.z * ammo.position.z) > 2500*2500;
+    };
+
+    ammoList.erase(std::remove_if(ammoList.begin(), ammoList.end(), condition), ammoList.end());
+    enemyAmmoList.erase(std::remove_if(enemyAmmoList.begin(), enemyAmmoList.end(), condition), enemyAmmoList.end());
+
+    //std::cout << ammoList.size() << " " << enemyAmmoList.size() << std::endl;
 }
 
 void AmmoController::drawAmmos(Shader shaderProgram, Camera camera) {
@@ -47,3 +55,5 @@ void AmmoController::drawAmmos(Shader shaderProgram, Camera camera) {
         ammo.draw(shaderProgram, camera);
     }
 }
+
+
